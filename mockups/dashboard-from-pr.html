@@ -65,6 +65,7 @@
   --nr-error: var(--nr-danger);
   --nr-danger-text: #A32330;   /* on --nr-danger-tint: 6.42:1 */
   --nr-danger-tint: #FCEBED;
+  --nr-danger-border: #F2C4C9;  /* edge of the danger notice, decoration */
 
   /* Neutral Colors */
   --nr-ink: #25272D;           /* headings and emphasis: 14.93:1 on white */
@@ -171,6 +172,7 @@
     --nr-warning-tint: #33280A;     /* 9.5:1 */
     --nr-danger-text: #FFA7AE;
     --nr-danger-tint: #3A1418;      /* 8.8:1 */
+    --nr-danger-border: #6A2A31;
     --nr-success: #3FBF62;          /* marker, 6.60:1 on the surface */
     --nr-warning: #F2B92A;          /* marker, 8.77:1 */
     --nr-danger: #F0606C;           /* marker, 4.92:1 */
@@ -219,6 +221,7 @@
   --nr-warning-tint: #33280A;
   --nr-danger-text: #FFA7AE;
   --nr-danger-tint: #3A1418;
+  --nr-danger-border: #6A2A31;
   --nr-success: #3FBF62;      /* marker, 6.60:1 on the surface */
   --nr-warning: #F2B92A;      /* marker, 8.77:1 */
   --nr-danger: #F0606C;       /* marker, 4.92:1 */
@@ -943,36 +946,52 @@ code, kbd {
   color: var(--nr-text-secondary);
 }
 
-/* Notices are a full tinted surface with an icon. No edge stripe: tint, icon
-   and words carry the state. */
+/* Notices are white cards: a hairline, a soft shadow and a 40px icon tile in
+   the state's tint. The tile carries the state, the danger notice adds a red
+   title and edge. White separates from white and #F5F5F5 sections alike; a
+   pale tint would vanish on #F5F5F5, and an edge stripe is not used. */
 .notice {
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
   gap: 14px;
-  align-items: flex-start;
-  padding: var(--spacing-md) 20px;
+  align-items: start;
+  padding: 16px 20px 16px 16px;
+  border: 1px solid var(--nr-border-light);
   border-radius: 14px;
-  background: var(--nr-primary-wash);
+  background: var(--nr-surface);
+  box-shadow: var(--shadow-sm);
   color: var(--nr-text);
   font-size: 15px;
+  line-height: 1.55;
 }
 
-.notice strong { display: block; color: var(--nr-ink); font-family: var(--font-headline); }
-.notice-icon { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; fill: none; stroke: var(--nr-primary-fill); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.notice-success { background: var(--nr-success-tint); }
-.notice-success strong { color: var(--nr-success-text); }
-.notice-success .notice-icon { stroke: var(--nr-success-text); }
-.notice-warning { background: var(--nr-warning-tint); }
-.notice-warning strong { color: var(--nr-warning-text); }
-.notice-warning .notice-icon { stroke: var(--nr-warning-text); }
-.notice-danger { background: var(--nr-danger-tint); }
+.notice > :not(.notice-icon) { min-width: 0; padding-top: 8px; }
+.notice strong { display: block; margin-bottom: 2px; color: var(--nr-ink); font-family: var(--font-headline); }
+
+.notice-icon {
+  box-sizing: content-box;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--nr-primary-tint);
+  fill: none;
+  stroke: var(--nr-primary-text);  /* lifts to #5FC6D2 on dark */
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notice-success .notice-icon { background: var(--nr-success-tint); stroke: var(--nr-success-text); }
+.notice-warning .notice-icon { background: var(--nr-warning-tint); stroke: var(--nr-warning-text); }
+.notice-danger { border-color: var(--nr-danger-border); }
+.notice-danger .notice-icon { background: var(--nr-danger-tint); stroke: var(--nr-danger-text); }
 .notice-danger strong { color: var(--nr-danger-text); }
-.notice-danger .notice-icon { stroke: var(--nr-danger-text); }
 
 /* Text on tints. --nr-text-secondary (#6E6F78) is 4.99:1 on white but only
    4.34-4.49:1 on the light tints, so every tinted container redefines it to
    --nr-text (6.05:1 or more). Meta lines, timestamps and captions inside a
    tinted notice, badge or table row stay readable without a special class. */
-.notice,
 .badge,
 .table tr.row-danger,
 .table tr.row-warning,
@@ -1580,75 +1599,54 @@ code, kbd {
 
 
 /* ============================================
-   DASHBOARD COMPONENTS (built on the tokens above)
+   DASHBOARD COMPONENTS (built from --nr-* tokens)
    ============================================ */
-.logo-plate {
-  display: block;
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background: #FFFFFF; /* constant plate: the logo is never recoloured, so it keeps a white ground in the dark scheme */
-}
-.logo-plate svg { display: block; width: 40px; height: 40px; }
-
-.page-band .band-meta { margin: 0; color: var(--nr-on-fill); font-size: var(--font-size-base); }
-.page-band .band-lead { margin: 0 0 var(--spacing-md); max-width: 62ch; color: var(--nr-on-fill); font-size: var(--font-size-lg); line-height: 1.55; }
-.band-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-sm) var(--spacing-md); }
-
-.block { margin-top: var(--spacing-xxl); }
-.page-body > .block:first-child { margin-top: 0; }
-.block-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--spacing-xs) var(--spacing-lg); margin-bottom: var(--spacing-md); }
-.block-head .eyebrow { margin-bottom: 6px; }
-.block-title { font-size: var(--font-size-2xl); margin: 0; }
-.block-note { margin: 0; font-size: var(--font-size-sm); color: var(--nr-text-secondary); max-width: none; }
-
-.summary { padding: var(--spacing-xl); border: 1px solid var(--nr-border-light); border-radius: var(--radius-lg); background: var(--nr-surface); box-shadow: var(--shadow-md); }
-.summary p { max-width: 78ch; font-size: var(--font-size-base); }
-.summary .stat-grid { margin-top: var(--spacing-lg); }
-.summary .stat { background: var(--nr-bg-alt); box-shadow: none; padding: var(--spacing-md) var(--spacing-lg); }
-.summary .stat-value { font-size: var(--font-size-2xl); }
-
-.notice-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-sm) var(--spacing-md); margin-top: var(--spacing-sm); }
-.notice .notice-meta { display: block; margin-top: 4px; font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
-.alert-grid { display: flex; gap: 14px; align-items: flex-start; }
-.alert-grid > div { min-width: 0; }
-
-.env-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-lg); }
-.env-card { height: auto; display: flex; flex-direction: column; }
-.env-card .card-content { flex: 1 1 auto; }
-.env-top { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
-.env-top .card-title { margin: 0; }
-.env-facts { display: grid; grid-template-columns: minmax(84px, auto) minmax(0, 1fr); gap: 10px var(--spacing-md); margin: 0; font-size: 15px; }
-.env-facts dt { font-size: var(--font-size-sm); font-weight: 600; color: var(--nr-text-secondary); }
-.env-facts dd { margin: 0; color: var(--nr-text); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
-.env-card .card-footer .card-meta { overflow-wrap: anywhere; }
-
-.table .pipeline { font-family: var(--font-headline); font-weight: 700; font-variant-numeric: tabular-nums; }
+.navbar-meta { display: flex; align-items: center; gap: var(--spacing-md); font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
+.page-band .lead { color: var(--nr-on-fill); max-width: 62ch; margin: var(--spacing-xs) 0 0; }
+.page-body > * + * { margin-top: var(--spacing-lg); }
+.panel { background: var(--nr-surface); border: 1px solid var(--nr-border-light); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: var(--spacing-xl); }
+.panel h2 { font-size: var(--font-size-2xl); margin-bottom: var(--spacing-sm); }
+.panel .summary-text { margin-bottom: var(--spacing-lg); max-width: 80ch; }
+.block-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--spacing-xs) var(--spacing-md); margin-bottom: var(--spacing-md); }
+.block-head h2 { font-size: var(--font-size-2xl); margin: 0; }
+.block-head p { margin: 0; font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
+.stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stat { box-shadow: none; }
+.env-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-md); }
+.env-card .card-content { padding: var(--spacing-lg); }
+.env-head { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+.env-head h3 { margin: 0; font-size: var(--font-size-xl); }
+.env-list { display: grid; gap: 10px; margin: 0; }
+.env-list div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--spacing-sm); font-size: var(--font-size-sm); }
+.env-list dt { color: var(--nr-text-secondary); font-weight: 600; }
+.env-list dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .table td code { white-space: nowrap; }
-.table .nowrap { white-space: nowrap; }
+.table .id { font-family: var(--font-headline); font-weight: 700; font-variant-numeric: tabular-nums; }
+.table .id a { text-decoration: none; }
+.table .id a:hover { text-decoration: underline; }
+.notice .notice-actions { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); margin-top: var(--spacing-sm); padding-top: 0; }
+.example-note { font-size: var(--font-size-sm); color: var(--nr-text-secondary); max-width: none; margin: 0; }
 
 @media (max-width: 1024px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .env-grid { grid-template-columns: minmax(0, 1fr); }
-  .env-facts { grid-template-columns: minmax(96px, auto) minmax(0, 1fr); }
 }
-
 @media (max-width: 768px) {
-  .summary { padding: var(--spacing-lg); }
-  .page-band .band-lead { font-size: var(--font-size-base); }
+  .panel { padding: var(--spacing-lg); }
+  .navbar-container { gap: var(--spacing-sm); }
+  .navbar-updated { display: none; }
 }
-
-/* Builds table becomes a list of labelled rows on a phone, so the page never scrolls sideways. */
-@media (max-width: 640px) {
-  .table-stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .table-stack, .table-stack tbody, .table-stack tr, .table-stack td { display: block; width: 100%; }
-  .table-stack tr { padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--nr-border-light); }
-  .table-stack tr:last-child { border-bottom: 0; }
-  .table-stack td { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); padding: 6px var(--spacing-md); border-bottom: 0; text-align: right; }
-  .table-stack td::before { content: attr(data-label); flex: 0 0 auto; font-size: var(--font-size-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--nr-text-secondary); text-align: left; }
-  .table-stack .num { text-align: right; }
-  .alert-grid { flex-direction: column; gap: var(--spacing-xs); }
-  .notice-actions .btn-tonal { width: 100%; }
+@media (max-width: 600px) {
+  .stat-grid { grid-template-columns: minmax(0, 1fr); }
+  .navbar-wordmark small { display: none; }
+  .table-wrap { overflow-x: visible; }
+  .table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .table tbody tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--nr-border-light); }
+  .table tbody tr:last-child { border-bottom: 0; }
+  .table tr.row-danger { background: var(--nr-danger-tint); }
+  .table td { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); padding: 5px var(--spacing-md); border: 0; text-align: right; }
+  .table td::before { content: attr(data-label); flex: 0 0 auto; font-size: var(--font-size-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--nr-text-secondary); text-align: left; }
+  .table .num { text-align: right; }
 }
   </style>
 </head>
@@ -1657,14 +1655,13 @@ code, kbd {
 
   <nav class="navbar" aria-label="Main">
     <div class="navbar-container">
-      <a class="navbar-brand" href="https://www.netresearch.de/">
-        <span class="logo-plate"><svg width="40" height="40" role="img" aria-label="Netresearch"
+      <a class="navbar-brand" href="https://www.netresearch.de/" aria-label="Netresearch">
+        <svg class="navbar-logo" width="40" height="40" role="img" aria-label="Netresearch"
    viewBox="-75 -75 440 440"
    zoomAndPan="disable"
    version="1.2"
    baseProfile="tiny-ps"
    xmlns="http://www.w3.org/2000/svg">
-  <title>Netresearch DTT GmbH</title>
   <g>
     <path
        fill="#2F99A4"
@@ -1675,248 +1672,196 @@ code, kbd {
        d="M221.44,120.41c0-34.48-13.94-57.82-48.93-57.82-26.62,0-48.54,7.74-64.17,26.56l-.7-22.06-28.31.06V232.94h31.59V124.69c7.14-18.38,32.14-34.8,53-34.5,27.38.4,25.2,26.24,26,45.81v96.94h31.58"
        transform="translate(-0.39 -0.04)" />
   </g>
-</svg></span>
-        <span class="navbar-wordmark">DataSync<small>Netresearch</small></span>
+</svg>
+        <span class="navbar-wordmark">DataSync<small>Build and deployment status</small></span>
       </a>
-
-      <button class="navbar-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <ul class="navbar-menu" id="nav-menu">
-        <li><a href="#overview" class="navbar-link active" aria-current="page">Overview</a></li>
-        <li><a href="#environments" class="navbar-link">Environments</a></li>
-        <li><a href="#builds" class="navbar-link">Builds</a></li>
-      </ul>
+      <div class="navbar-meta">
+        <span class="navbar-updated">Updated 13 Oct 2026, 14:02 CEST</span>
+        <span class="badge badge-accent">Example data</span>
+      </div>
     </div>
   </nav>
 
-  <main id="main">
-    <header class="page-band">
-      <div class="page-band-inner">
-        <p class="eyebrow">Build and deployment status</p>
-        <h1>DataSync</h1>
-        <p class="band-lead">Pipelines and environments of the DataSync project at a glance.</p>
-        <div class="band-row">
-          <span class="badge badge-accent">Example data</span>
-          <p class="band-meta">Status as of 13 Oct 2026, 14:05 CEST</p>
+  <header class="page-band">
+    <div class="page-band-inner">
+      <p class="eyebrow">DataSync · CI/CD</p>
+      <h1>Build and deployment status</h1>
+      <p class="lead">Pipelines on <code>main</code> and feature branches, plus what runs on production, staging and the review environment.</p>
+    </div>
+  </header>
+
+  <main id="main" class="page-body">
+
+    <section class="panel" aria-labelledby="summary-title">
+      <p class="eyebrow">Current state</p>
+      <h2 id="summary-title">One failed build on main, all environments healthy</h2>
+      <p class="summary-text">Production runs release v2.14.3 and staging runs the last passing commit on <code>main</code>. Pipeline #48213 on <code>main</code> failed in the integration tests stage and has not been deployed. One pipeline is running on <code>feature/retry-backoff</code>.</p>
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat-label">Success rate, 24 h</span>
+          <span class="stat-value">86 %</span>
+          <span class="stat-meta">19 of 22 pipelines passed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Median duration</span>
+          <span class="stat-value">6 min 15 s</span>
+          <span class="stat-meta">Last 20 finished pipelines</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Last production deploy</span>
+          <span class="stat-value">10:52</span>
+          <span class="stat-meta">13 Oct 2026, v2.14.3</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Open alerts</span>
+          <span class="stat-value">1</span>
+          <span class="stat-meta">Failed build on main</span>
         </div>
       </div>
-    </header>
+    </section>
 
-    <div class="page-body">
-      <section class="block" id="overview" aria-labelledby="overview-title">
-        <div class="summary">
-          <p class="eyebrow">Summary</p>
-          <h2 id="overview-title" class="block-title mb-sm">Current state</h2>
-          <p>Production runs v2.14.3 and is healthy. Build #4821 on <code>feature/retry-backoff</code> failed in the integration tests, and its review environment still serves the previous commit. Staging is deploying <code>release/2.15</code>, and build #4822 on <code>main</code> is running.</p>
-          <div class="stat-grid">
-            <div class="stat"><span class="stat-label">Passed</span><span class="stat-value">5 of 8</span><span class="stat-meta">last 8 builds</span></div>
-            <div class="stat"><span class="stat-label">Failed</span><span class="stat-value">1</span><span class="stat-meta">#4821, 13 Oct 13:41</span></div>
-            <div class="stat"><span class="stat-label">Average duration</span><span class="stat-value">11m 08s</span><span class="stat-meta">5 passed builds</span></div>
-            <div class="stat"><span class="stat-label">Production</span><span class="stat-value">v2.14.3</span><span class="stat-meta">deployed 12 Oct 18:04</span></div>
-          </div>
+    <div class="notice notice-danger" role="alert">
+      <svg class="notice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.8 19.5h18.4L12 3.5Z"/><path d="M12 10v4.2M12 17.2v.1"/></svg>
+      <div>
+        <strong>Build #48213 failed on main</strong>
+        Stage <code>integration-tests</code> exited with code 1 after 6 min 42 s: <code>test_incremental_sync_resume</code> timed out waiting for the PostgreSQL 16 service container. Started 13 Oct 2026, 13:41. The commit was not deployed to staging.
+        <div class="notice-actions">
+          <a class="btn-tonal btn-small" href="#build-48213">Open pipeline #48213</a>
+          <a class="btn-ghost btn-small" href="#build-48213">View job log</a>
         </div>
-      </section>
-
-      <section class="block" aria-labelledby="alert-title">
-        <div class="notice notice-danger">
-          <svg class="notice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 22 20.5H2z"/><path d="M12 10v5M12 17.8v.2"/></svg>
-          <div>
-            <strong id="alert-title">Build #4821 failed on feature/retry-backoff</strong>
-            Stage <code>test:integration</code> ended with 2 failed tests (<code>RetryPolicyTest</code>, <code>BackoffJitterTest</code>) after 6m 42s. The review environment was not updated.
-            <span class="notice-meta">Started 13 Oct 2026, 13:41 CEST · commit 9c41e7a</span>
-            <div class="notice-actions">
-              <a class="btn-tonal btn-small" href="#builds">Show build in list</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="block" id="environments" aria-labelledby="env-title">
-        <div class="block-head">
-          <div>
-            <p class="eyebrow">Deployments</p>
-            <h2 id="env-title" class="block-title">Environments</h2>
-          </div>
-          <p class="block-note">3 environments</p>
-        </div>
-
-        <div class="env-grid">
-          <article class="card env-card">
-            <div class="card-content">
-              <div class="env-top">
-                <h3 class="card-title">Production</h3>
-                <span class="badge badge-success">Healthy</span>
-              </div>
-              <dl class="env-facts">
-                <dt>Version</dt><dd>v2.14.3</dd>
-                <dt>Source</dt><dd>#4817 · <code>main</code></dd>
-                <dt>Deployed</dt><dd>12 Oct 2026, 18:04</dd>
-                <dt>Health check</dt><dd>200 OK, 14:04</dd>
-              </dl>
-            </div>
-            <div class="card-footer"><span class="card-meta">app.datasync.example</span></div>
-          </article>
-
-          <article class="card env-card">
-            <div class="card-content">
-              <div class="env-top">
-                <h3 class="card-title">Staging</h3>
-                <span class="badge badge-info">Deploying</span>
-              </div>
-              <dl class="env-facts">
-                <dt>Version</dt><dd>v2.15.0-rc.1</dd>
-                <dt>Source</dt><dd>#4819 · <code>release/2.15</code></dd>
-                <dt>Deploy started</dt><dd>13 Oct 2026, 14:02</dd>
-                <dt>Previous</dt><dd>v2.14.3</dd>
-              </dl>
-            </div>
-            <div class="card-footer"><span class="card-meta">staging.datasync.example</span></div>
-          </article>
-
-          <article class="card env-card">
-            <div class="card-content">
-              <div class="env-top">
-                <h3 class="card-title">Review</h3>
-                <span class="badge badge-warning">Outdated</span>
-              </div>
-              <dl class="env-facts">
-                <dt>Branch</dt><dd><code>feature/retry-backoff</code></dd>
-                <dt>Commit</dt><dd>7be2d40</dd>
-                <dt>Deployed</dt><dd>13 Oct 2026, 09:52</dd>
-                <dt>Newer build</dt><dd>#4821 failed, not deployed</dd>
-              </dl>
-            </div>
-            <div class="card-footer"><span class="card-meta">retry-backoff.review.datasync.example</span></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="block" id="builds" aria-labelledby="builds-title">
-        <div class="block-head">
-          <div>
-            <p class="eyebrow">Pipelines</p>
-            <h2 id="builds-title" class="block-title">Latest builds</h2>
-          </div>
-          <p class="block-note">Last 8 pipelines · times in CEST · example data</p>
-        </div>
-
-        <div class="table-wrap">
-          <table class="table table-stack">
-            <caption class="visually-hidden">Latest 8 DataSync pipelines with branch, status, duration and start time</caption>
-            <thead>
-              <tr>
-                <th scope="col">Pipeline</th>
-                <th scope="col">Branch</th>
-                <th scope="col">Status</th>
-                <th scope="col" class="num">Duration</th>
-                <th scope="col">Started</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4822</a></td>
-                <td data-label="Branch"><code>main</code></td>
-                <td data-label="Status"><span class="badge badge-info">Running</span></td>
-                <td data-label="Duration" class="num">2m 31s</td>
-                <td data-label="Started" class="nowrap">13 Oct, 14:01</td>
-              </tr>
-              <tr class="row-danger">
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4821</a></td>
-                <td data-label="Branch"><code>feature/retry-backoff</code></td>
-                <td data-label="Status"><span class="badge badge-danger">Failed</span></td>
-                <td data-label="Duration" class="num">6m 42s</td>
-                <td data-label="Started" class="nowrap">13 Oct, 13:41</td>
-              </tr>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4820</a></td>
-                <td data-label="Branch"><code>main</code></td>
-                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
-                <td data-label="Duration" class="num">11m 08s</td>
-                <td data-label="Started" class="nowrap">13 Oct, 13:12</td>
-              </tr>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4819</a></td>
-                <td data-label="Branch"><code>release/2.15</code></td>
-                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
-                <td data-label="Duration" class="num">12m 20s</td>
-                <td data-label="Started" class="nowrap">13 Oct, 10:56</td>
-              </tr>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4818</a></td>
-                <td data-label="Branch"><code>feature/schema-diff</code></td>
-                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
-                <td data-label="Duration" class="num">9m 47s</td>
-                <td data-label="Started" class="nowrap">13 Oct, 09:30</td>
-              </tr>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4817</a></td>
-                <td data-label="Branch"><code>main</code></td>
-                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
-                <td data-label="Duration" class="num">10m 52s</td>
-                <td data-label="Started" class="nowrap">12 Oct, 17:48</td>
-              </tr>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4816</a></td>
-                <td data-label="Branch"><code>fix/cursor-reset</code></td>
-                <td data-label="Status"><span class="badge">Canceled</span></td>
-                <td data-label="Duration" class="num">1m 14s</td>
-                <td data-label="Started" class="nowrap">12 Oct, 16:20</td>
-              </tr>
-              <tr>
-                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4815</a></td>
-                <td data-label="Branch"><code>main</code></td>
-                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
-                <td data-label="Duration" class="num">11m 31s</td>
-                <td data-label="Started" class="nowrap">12 Oct, 11:03</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      </div>
     </div>
+
+    <section class="panel" aria-labelledby="builds-title">
+      <div class="block-head">
+        <h2 id="builds-title">Last builds</h2>
+        <p>7 most recent pipelines, newest first (example data)</p>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Pipeline</th>
+              <th scope="col">Branch</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="num">Duration</th>
+              <th scope="col">Started</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="id" data-label="Pipeline"><a href="#build-48214">#48214</a></td>
+              <td data-label="Branch"><code>feature/retry-backoff</code></td>
+              <td data-label="Status"><span class="badge badge-info">Running</span></td>
+              <td class="num" data-label="Duration">2 min 05 s</td>
+              <td data-label="Started">13 Oct, 13:58</td>
+            </tr>
+            <tr id="build-48213" class="row-danger">
+              <td class="id" data-label="Pipeline"><a href="#build-48213">#48213</a></td>
+              <td data-label="Branch"><code>main</code></td>
+              <td data-label="Status"><span class="badge badge-danger">Failed</span></td>
+              <td class="num" data-label="Duration">6 min 42 s</td>
+              <td data-label="Started">13 Oct, 13:41</td>
+            </tr>
+            <tr>
+              <td class="id" data-label="Pipeline"><a href="#build-48212">#48212</a></td>
+              <td data-label="Branch"><code>feature/schema-diff</code></td>
+              <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+              <td class="num" data-label="Duration">5 min 58 s</td>
+              <td data-label="Started">13 Oct, 13:12</td>
+            </tr>
+            <tr>
+              <td class="id" data-label="Pipeline"><a href="#build-48211">#48211</a></td>
+              <td data-label="Branch"><code>main</code></td>
+              <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+              <td class="num" data-label="Duration">6 min 15 s</td>
+              <td data-label="Started">13 Oct, 11:56</td>
+            </tr>
+            <tr>
+              <td class="id" data-label="Pipeline"><a href="#build-48210">#48210</a></td>
+              <td data-label="Branch"><code>release/2.14</code></td>
+              <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+              <td class="num" data-label="Duration">7 min 03 s</td>
+              <td data-label="Started">13 Oct, 10:38</td>
+            </tr>
+            <tr>
+              <td class="id" data-label="Pipeline"><a href="#build-48209">#48209</a></td>
+              <td data-label="Branch"><code>review/DS-412-cursor-fix</code></td>
+              <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+              <td class="num" data-label="Duration">4 min 51 s</td>
+              <td data-label="Started">13 Oct, 09:47</td>
+            </tr>
+            <tr>
+              <td class="id" data-label="Pipeline"><a href="#build-48208">#48208</a></td>
+              <td data-label="Branch"><code>feature/schema-diff</code></td>
+              <td data-label="Status"><span class="badge">Canceled</span></td>
+              <td class="num" data-label="Duration">1 min 12 s</td>
+              <td data-label="Started">13 Oct, 09:20</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="env-title">
+      <div class="block-head">
+        <h2 id="env-title">Deployments</h2>
+        <p>Three environments (example data)</p>
+      </div>
+      <div class="env-grid">
+        <article class="card env-card" aria-labelledby="env-prod">
+          <div class="card-content">
+            <div class="env-head">
+              <h3 id="env-prod" class="card-title">Production</h3>
+              <span class="badge badge-success">Healthy</span>
+            </div>
+            <dl class="env-list">
+              <div><dt>Version</dt><dd>v2.14.3</dd></div>
+              <div><dt>Pipeline</dt><dd>#48210 on <code>release/2.14</code></dd></div>
+              <div><dt>Deployed</dt><dd>13 Oct, 10:52</dd></div>
+              <div><dt>Instances</dt><dd>4 of 4 ready</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="card env-card" aria-labelledby="env-stage">
+          <div class="card-content">
+            <div class="env-head">
+              <h3 id="env-stage" class="card-title">Staging</h3>
+              <span class="badge badge-success">Healthy</span>
+            </div>
+            <dl class="env-list">
+              <div><dt>Version</dt><dd>2.15.0-rc.1 (a3f9c1e)</dd></div>
+              <div><dt>Pipeline</dt><dd>#48211 on <code>main</code></dd></div>
+              <div><dt>Deployed</dt><dd>13 Oct, 12:08</dd></div>
+              <div><dt>Instances</dt><dd>2 of 2 ready</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="card env-card" aria-labelledby="env-review">
+          <div class="card-content">
+            <div class="env-head">
+              <h3 id="env-review" class="card-title">Review</h3>
+              <span class="badge badge-warning">Expires in 2 h</span>
+            </div>
+            <dl class="env-list">
+              <div><dt>Version</dt><dd>DS-412 (7be20d4)</dd></div>
+              <div><dt>Pipeline</dt><dd>#48209 on <code>review/DS-412-cursor-fix</code></dd></div>
+              <div><dt>Deployed</dt><dd>13 Oct, 09:58</dd></div>
+              <div><dt>Instances</dt><dd>1 of 1 ready</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="example-note">All pipelines, branches, versions and times on this page are example data and do not come from a live system.</p>
   </main>
 
   <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>DataSync</h4>
-        <ul>
-          <li><a href="#overview">Overview</a></li>
-          <li><a href="#environments">Environments</a></li>
-          <li><a href="#builds">Builds</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>About this page</h4>
-        <ul>
-          <li>All pipelines, versions, hosts and times on this page are example data.</li>
-        </ul>
-      </div>
-    </div>
-
     <div class="footer-bottom">
       <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a>. All rights reserved.</p>
       <p>Nonnenstraße 11d · 04229 Leipzig</p>
     </div>
   </footer>
-
-  <script>
-    var toggle = document.querySelector('.navbar-toggle');
-    var menu = document.querySelector('.navbar-menu');
-    toggle.addEventListener('click', function () {
-      var open = menu.classList.toggle('active');
-      toggle.setAttribute('aria-expanded', String(open));
-    });
-    document.querySelectorAll('.navbar-menu a[href^="#"]').forEach(function (a) {
-      a.addEventListener('click', function () {
-        menu.classList.remove('active');
-        toggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  </script>
 </body>
 </html>

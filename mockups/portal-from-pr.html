@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kursportal - Create your account</title>
+  <title>Create account | Kursportal | Netresearch</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -65,6 +65,7 @@
   --nr-error: var(--nr-danger);
   --nr-danger-text: #A32330;   /* on --nr-danger-tint: 6.42:1 */
   --nr-danger-tint: #FCEBED;
+  --nr-danger-border: #F2C4C9;  /* edge of the danger notice, decoration */
 
   /* Neutral Colors */
   --nr-ink: #25272D;           /* headings and emphasis: 14.93:1 on white */
@@ -171,6 +172,7 @@
     --nr-warning-tint: #33280A;     /* 9.5:1 */
     --nr-danger-text: #FFA7AE;
     --nr-danger-tint: #3A1418;      /* 8.8:1 */
+    --nr-danger-border: #6A2A31;
     --nr-success: #3FBF62;          /* marker, 6.60:1 on the surface */
     --nr-warning: #F2B92A;          /* marker, 8.77:1 */
     --nr-danger: #F0606C;           /* marker, 4.92:1 */
@@ -219,6 +221,7 @@
   --nr-warning-tint: #33280A;
   --nr-danger-text: #FFA7AE;
   --nr-danger-tint: #3A1418;
+  --nr-danger-border: #6A2A31;
   --nr-success: #3FBF62;      /* marker, 6.60:1 on the surface */
   --nr-warning: #F2B92A;      /* marker, 8.77:1 */
   --nr-danger: #F0606C;       /* marker, 4.92:1 */
@@ -943,36 +946,52 @@ code, kbd {
   color: var(--nr-text-secondary);
 }
 
-/* Notices are a full tinted surface with an icon. No edge stripe: tint, icon
-   and words carry the state. */
+/* Notices are white cards: a hairline, a soft shadow and a 40px icon tile in
+   the state's tint. The tile carries the state, the danger notice adds a red
+   title and edge. White separates from white and #F5F5F5 sections alike; a
+   pale tint would vanish on #F5F5F5, and an edge stripe is not used. */
 .notice {
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
   gap: 14px;
-  align-items: flex-start;
-  padding: var(--spacing-md) 20px;
+  align-items: start;
+  padding: 16px 20px 16px 16px;
+  border: 1px solid var(--nr-border-light);
   border-radius: 14px;
-  background: var(--nr-primary-wash);
+  background: var(--nr-surface);
+  box-shadow: var(--shadow-sm);
   color: var(--nr-text);
   font-size: 15px;
+  line-height: 1.55;
 }
 
-.notice strong { display: block; color: var(--nr-ink); font-family: var(--font-headline); }
-.notice-icon { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; fill: none; stroke: var(--nr-primary-fill); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.notice-success { background: var(--nr-success-tint); }
-.notice-success strong { color: var(--nr-success-text); }
-.notice-success .notice-icon { stroke: var(--nr-success-text); }
-.notice-warning { background: var(--nr-warning-tint); }
-.notice-warning strong { color: var(--nr-warning-text); }
-.notice-warning .notice-icon { stroke: var(--nr-warning-text); }
-.notice-danger { background: var(--nr-danger-tint); }
+.notice > :not(.notice-icon) { min-width: 0; padding-top: 8px; }
+.notice strong { display: block; margin-bottom: 2px; color: var(--nr-ink); font-family: var(--font-headline); }
+
+.notice-icon {
+  box-sizing: content-box;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--nr-primary-tint);
+  fill: none;
+  stroke: var(--nr-primary-text);  /* lifts to #5FC6D2 on dark */
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notice-success .notice-icon { background: var(--nr-success-tint); stroke: var(--nr-success-text); }
+.notice-warning .notice-icon { background: var(--nr-warning-tint); stroke: var(--nr-warning-text); }
+.notice-danger { border-color: var(--nr-danger-border); }
+.notice-danger .notice-icon { background: var(--nr-danger-tint); stroke: var(--nr-danger-text); }
 .notice-danger strong { color: var(--nr-danger-text); }
-.notice-danger .notice-icon { stroke: var(--nr-danger-text); }
 
 /* Text on tints. --nr-text-secondary (#6E6F78) is 4.99:1 on white but only
    4.34-4.49:1 on the light tints, so every tinted container redefines it to
    --nr-text (6.05:1 or more). Meta lines, timestamps and captions inside a
    tinted notice, badge or table row stay readable without a special class. */
-.notice,
 .badge,
 .table tr.row-danger,
 .table tr.row-warning,
@@ -1578,168 +1597,162 @@ code, kbd {
   white-space: nowrap;
 }
 
-
 /* ============================================
-   PAGE-SPECIFIC
+   PAGE: Kursportal account creation
    ============================================ */
-.navbar-actions { display: flex; align-items: center; gap: var(--spacing-sm); }
-.navbar-actions .nav-hint { font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
+.navbar-actions { display: flex; align-items: center; gap: var(--spacing-md); }
+.navbar-actions span { font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
 
+.split-layout { min-height: 680px; grid-template-columns: minmax(380px, 5fr) minmax(0, 7fr); }
 .split-panel h1 {
+  font-size: clamp(32px, 3vw, 44px);
   color: var(--nr-on-fill);
-  font-size: clamp(32px, 3.2vw, 44px);
   margin-bottom: var(--spacing-md);
 }
-.split-panel .panel-intro { font-size: var(--font-size-lg); line-height: 1.6; max-width: 46ch; margin-bottom: 0; }
+.split-panel .panel-lead { color: var(--nr-on-fill); font-size: var(--font-size-lg); line-height: 1.6; max-width: 46ch; margin-bottom: 0; }
 .split-panel .steps { margin-top: var(--spacing-xl); }
 .split-panel .step-body strong { font-size: var(--font-size-lg); margin-bottom: 2px; }
-.split-panel .step-body span { font-size: 15px; line-height: 1.5; display: block; max-width: 40ch; }
-.panel-inner { width: 100%; max-width: 520px; margin-left: auto; }
+.split-panel .step-body span { font-size: 15px; line-height: 1.5; display: block; }
 
-.form-head { margin-bottom: var(--spacing-lg); }
-.form-head h2 { font-size: var(--font-size-4xl); margin-bottom: var(--spacing-xs); }
-.form-head p { margin-bottom: 0; }
-.form .form-check { margin-bottom: var(--spacing-md); }
-.form .form-check label { color: var(--nr-text); }
-.form .req { color: var(--nr-accent-text); font-weight: 700; }
-.form-submit { margin-top: var(--spacing-lg); }
-.form-alt { margin-top: var(--spacing-lg); margin-bottom: 0; font-size: 15px; text-align: left; }
-.form-alt a { font-family: var(--font-headline); font-weight: 700; }
+.signup-head { margin-bottom: var(--spacing-lg); }
+.signup-head h2 { font-size: var(--font-size-4xl); margin-bottom: var(--spacing-xs); }
+.signup-head p { color: var(--nr-text); margin: 0; }
+.signup .form-group { margin-bottom: var(--spacing-lg); }
+.signup .form-group.form-check { margin-bottom: var(--spacing-md); }
+.signup .form-check label { color: var(--nr-text); }
+.signup .form-check small { color: var(--nr-text-secondary); font-size: 13px; }
+.signup .btn-primary { margin-top: var(--spacing-xs); }
+.signup-alt {
+  margin: var(--spacing-lg) 0 0;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--nr-border-light);
+  font-size: var(--font-size-base);
+  max-width: none;
+}
+.req { color: var(--nr-accent-text); font-weight: 700; }
 
-.facts-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-lg); }
-.facts-grid .card { height: auto; }
-.facts-grid .card-title { font-size: var(--font-size-xl); }
-.facts-grid .card-text { margin-bottom: 0; }
+.facts-section .section-header { margin-bottom: var(--spacing-xl); }
 
 @media (max-width: 1024px) {
-  .panel-inner { margin-left: 0; }
-  .facts-grid { grid-template-columns: minmax(0, 1fr); }
+  .split-layout { min-height: 0; }
+  .split-main { padding: var(--spacing-xxl) var(--spacing-lg); justify-content: flex-start; }
   .split-main > * { max-width: 560px; }
-  .split-main { justify-content: flex-start; }
 }
-@media (max-width: 600px) {
-  .navbar-actions .nav-hint { display: none; }
-  .split-main { padding: var(--spacing-xxl) var(--spacing-md); }
-  .split-panel { padding: var(--spacing-xxl) var(--spacing-md); }
-  .form-head h2 { font-size: var(--font-size-3xl); }
-  .section { padding: var(--spacing-3xl) 0; }
-  .navbar-wordmark { font-size: var(--font-size-base); }
+@media (max-width: 768px) {
+  .navbar-actions span { display: none; }
+  .split-main { padding: var(--spacing-xl) var(--spacing-md); }
+  .signup-head h2 { font-size: var(--font-size-3xl); }
+  .facts-section { padding: var(--spacing-xxl) 0; }
+  .footer { padding-top: var(--spacing-xxl); }
 }
   </style>
 </head>
-<body>
+<body id="top">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <nav class="navbar" aria-label="Main">
     <div class="navbar-container">
-      <a class="navbar-brand" href="https://www.netresearch.de/" aria-label="Netresearch, Kursportal">
-        <svg class="navbar-logo" width="40" height="40" role="img" aria-label="Netresearch"
-   viewBox="-75 -75 440 440"
-   zoomAndPan="disable"
-   version="1.2"
-   baseProfile="tiny-ps"
-   xmlns="http://www.w3.org/2000/svg">
-  <g>
-    <path
-       fill="#2F99A4"
-       d="M209.6,0V31.62h32.77a26.38,26.38,0,0,1,26.44,26.43V242a26.38,26.38,0,0,1-26.44,26.44H209.6V300h47.93a42.77,42.77,0,0,0,42.86-42.86V42.89A42.76,42.76,0,0,0,257.53,0ZM43.25,0A42.76,42.76,0,0,0,.39,42.89V257.18A42.76,42.76,0,0,0,43.25,300H91.18V268.46H58.4A26.38,26.38,0,0,1,32,242v-184A26.37,26.37,0,0,1,58.4,31.62H91.18V0Z"
-       transform="translate(-0.39 -0.04)" />
-    <path
-       fill="#585961"
-       d="M221.44,120.41c0-34.48-13.94-57.82-48.93-57.82-26.62,0-48.54,7.74-64.17,26.56l-.7-22.06-28.31.06V232.94h31.59V124.69c7.14-18.38,32.14-34.8,53-34.5,27.38.4,25.2,26.24,26,45.81v96.94h31.58"
-       transform="translate(-0.39 -0.04)" />
-  </g>
-</svg>
+      <a class="navbar-brand" href="https://www.netresearch.de/">
+        <svg class="navbar-logo" width="40" height="40" role="img" aria-label="Netresearch" viewBox="-75 -75 440 440" zoomAndPan="disable" version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg"> <title>Netresearch DTT GmbH</title> <g> <path fill="#2F99A4" d="M209.6,0V31.62h32.77a26.38,26.38,0,0,1,26.44,26.43V242a26.38,26.38,0,0,1-26.44,26.44H209.6V300h47.93a42.77,42.77,0,0,0,42.86-42.86V42.89A42.76,42.76,0,0,0,257.53,0ZM43.25,0A42.76,42.76,0,0,0,.39,42.89V257.18A42.76,42.76,0,0,0,43.25,300H91.18V268.46H58.4A26.38,26.38,0,0,1,32,242v-184A26.37,26.37,0,0,1,58.4,31.62H91.18V0Z" transform="translate(-0.39 -0.04)" /> <path fill="#585961" d="M221.44,120.41c0-34.48-13.94-57.82-48.93-57.82-26.62,0-48.54,7.74-64.17,26.56l-.7-22.06-28.31.06V232.94h31.59V124.69c7.14-18.38,32.14-34.8,53-34.5,27.38.4,25.2,26.24,26,45.81v96.94h31.58" transform="translate(-0.39 -0.04)" /> </g> </svg>
         <span class="navbar-wordmark">Kursportal<small>by Netresearch</small></span>
       </a>
       <div class="navbar-actions">
-        <span class="nav-hint">Already registered?</span>
-        <a href="#sign-in" class="btn-tonal btn-small">Sign in</a>
+        <span>Already registered?</span>
+        <a href="#signin" class="btn-tonal btn-small">Sign in</a>
       </div>
     </div>
   </nav>
 
   <main id="main">
     <div class="split-layout">
-      <!-- Brand panel: the page's one bold surface, carries the real sequence -->
-      <section class="split-panel" aria-labelledby="panel-title">
-        <div class="panel-inner">
-          <p class="eyebrow">Course handover</p>
-          <h1 id="panel-title">Hand over your e-learning courses in three steps</h1>
-          <p class="panel-intro">Send us your course package and test the prepared course in your browser. No setup on your side.</p>
-          <ol class="steps">
-            <li class="is-current"><span class="step-num" aria-hidden="true">1</span><span class="step-body"><strong>Create your account</strong><span>Name and work email. You are in within a minute.</span></span></li>
-            <li><span class="step-num" aria-hidden="true">2</span><span class="step-body"><strong>Upload the course ZIP</strong><span>Drop in the exported course package as a single ZIP file.</span></span></li>
-            <li><span class="step-num" aria-hidden="true">3</span><span class="step-body"><strong>Test the prepared course</strong><span>Open the finished course from your account and review it.</span></span></li>
-          </ol>
-        </div>
+      <section class="split-panel" aria-labelledby="page-title">
+        <p class="eyebrow">Course handover</p>
+        <h1 id="page-title">Hand over your e-learning course</h1>
+        <p class="panel-lead">The Kursportal is where your company sends us a course package and checks the prepared result. It takes three steps.</p>
+
+        <ol class="steps">
+          <li class="is-current" aria-current="step">
+            <span class="step-num" aria-hidden="true">1</span>
+            <span class="step-body"><strong>Create account</strong><span>Name and work email. You are here.</span></span>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">2</span>
+            <span class="step-body"><strong>Upload the course ZIP</strong><span>Send your course package as one ZIP file.</span></span>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">3</span>
+            <span class="step-body"><strong>Test the prepared course</strong><span>Open the prepared course and try it out yourself.</span></span>
+          </li>
+        </ol>
       </section>
 
-      <!-- Task side: plain white -->
       <section class="split-main" aria-labelledby="form-title">
-        <div>
-          <div class="form-head">
-            <p class="eyebrow">Step 1 of 3</p>
+        <div class="signup">
+          <div class="signup-head">
+            <p class="eyebrow">New customer</p>
             <h2 id="form-title">Create your account</h2>
-            <p>It takes about a minute. Fields marked <span class="req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+            <p>Fields marked <span class="req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
           </div>
 
-          <form class="form" action="#" method="post">
+          <form action="#" method="post">
             <div class="form-group">
               <label for="name" class="form-label">Full name <span class="req" aria-hidden="true">*</span></label>
-              <input type="text" id="name" name="name" class="form-input" placeholder="Maria Beispiel" autocomplete="name" required>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Your name" autocomplete="name" required>
             </div>
 
             <div class="form-group">
               <label for="email" class="form-label">Work email <span class="req" aria-hidden="true">*</span></label>
-              <input type="email" id="email" name="email" class="form-input" placeholder="maria@company.com" autocomplete="email" required aria-describedby="email-help">
+              <input type="email" id="email" name="email" class="form-input" placeholder="name@company.com" autocomplete="email" required aria-describedby="email-help">
               <span class="form-help" id="email-help">We send your sign-in link to this address.</span>
             </div>
 
-            <div class="form-check">
+            <div class="form-group form-check">
               <input type="checkbox" id="consent" name="consent" required>
-              <label for="consent">I agree that my details are processed to provide the portal, as described in the <a href="#privacy">privacy policy</a>. <span class="req" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <label for="consent">I agree that my details are processed as described in the <a href="#privacy">privacy policy</a>. <span class="req" aria-hidden="true">*</span></label>
             </div>
 
-            <div class="form-check">
+            <div class="form-group form-check">
               <input type="checkbox" id="newsletter" name="newsletter">
-              <label for="newsletter">Send me occasional news about Kursportal by email (optional).</label>
+              <label for="newsletter">Send me occasional news about the Kursportal. <small>(optional)</small></label>
             </div>
 
-            <button type="submit" class="btn-primary btn-large btn-block form-submit">Create account</button>
-            <p class="form-alt" id="sign-in">Already have an account? <a href="#sign-in">Sign in</a></p>
+            <button type="submit" class="btn-primary btn-large btn-block">Create account</button>
           </form>
+
+          <p class="signup-alt">Already have an account? <a href="#signin">Sign in instead</a></p>
         </div>
       </section>
     </div>
 
-    <!-- Facts -->
-    <section class="section section-alt" aria-labelledby="facts-title">
+    <section class="section section-alt facts-section" aria-labelledby="facts-title">
       <div class="container">
         <div class="section-header">
           <p class="eyebrow">Good to know</p>
           <h2 id="facts-title" class="section-title">Three things before you start</h2>
         </div>
-        <div class="facts-grid">
+
+        <div class="three-column">
           <div class="card">
             <div class="card-content">
-              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg></span>
+              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="7" rx="2"/><rect x="3" y="13.5" width="18" height="7" rx="2"/><path d="M7 7h.01M7 17h.01"/></svg></span>
               <h3 class="card-title">Server in Germany</h3>
-              <p class="card-text">Your course files are stored and processed on a server located in Germany.</p>
+              <p class="card-text mb-0">Your course files are stored on a server in Germany.</p>
             </div>
           </div>
+
           <div class="card">
             <div class="card-content">
-              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3M4 4l16 16"/></svg></span>
-              <h3 class="card-title">No payment details</h3>
-              <p class="card-text">Creating an account and uploading a course does not ask for a card or bank account.</p>
+              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span>
+              <h3 class="card-title">No payment details needed</h3>
+              <p class="card-text mb-0">The account does not ask for a card or bank details.</p>
             </div>
           </div>
+
           <div class="card">
             <div class="card-content">
               <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></span>
               <h3 class="card-title">Sign-in by email link</h3>
-              <p class="card-text">There is no password. Each time you sign in, we send a one-time link to your work email.</p>
+              <p class="card-text mb-0">There is no password to remember. We send a sign-in link to your work email.</p>
             </div>
           </div>
         </div>
@@ -1752,8 +1765,8 @@ code, kbd {
       <div class="footer-section">
         <h4>Kursportal</h4>
         <ul>
-          <li><a href="#sign-in">Sign in</a></li>
-          <li><a href="#help">Help</a></li>
+          <li><a href="#top">Create account</a></li>
+          <li><a href="#signin">Sign in</a></li>
         </ul>
       </div>
       <div class="footer-section">
