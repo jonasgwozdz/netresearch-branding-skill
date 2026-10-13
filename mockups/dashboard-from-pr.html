@@ -12,12 +12,10 @@
  * Netresearch Brand Styles
  * Complete CSS template following brand guidelines.
  *
- * Design treatment: modern by default (see references/web-design.md,
- * "Design treatment"). Brand tokens and hard rules are unchanged; what this
- * file adds is the contemporary layer on top of them: hairline borders and
- * layered soft shadows instead of heavy drop shadows, 10/16px radii, focus
- * rings instead of hover jumps, opaque status tints, and the petrol gradient
- * with the nested-square motif as the one bold surface per page.
+ * How a branded page is built: see references/web-design.md. Hairline
+ * borders with layered soft shadows, 10/16/24px radii, focus outlines instead
+ * of hover jumps, opaque status tints without edge stripes, and the petrol
+ * gradient with the nested-square motif as the one bold surface per page.
  *
  * Every class name of the previous template is still defined, so pages built
  * on it keep working.
@@ -42,7 +40,7 @@
      dark scheme, where white over it would fail with nothing able to measure it. */
   --nr-hero-from: #257880;    /* white on it: 5.15:1 */
   --nr-hero-to: #15585E;      /* white on it: 8.11:1 */
-  --nr-hero-end: #0A5057;     /* third stop of the modern gradient: 9.14:1 */
+  --nr-hero-end: #0A5057;     /* third stop of the hero gradient: 9.14:1 */
   /* A button's hover is a surface too, for the same reason. */
   --nr-primary-fill-hover: #15585E;
   --nr-accent-fill-hover: #9A2E00;
@@ -57,13 +55,14 @@
   --nr-primary-tint: #E6F2F3;  /* --nr-primary-text on it: 7.09:1 */
   --nr-primary-wash: #F3F9F9;  /* the lightest teal surface */
   --nr-accent-tint: #FFF0E8;   /* --nr-accent-text on it: 6.83:1 */
-  --nr-success: #28A745;       /* marker only */
+  --nr-success: #28A745;       /* marker only; colors.md semantic set */
   --nr-success-text: #1E6F31;  /* on --nr-success-tint: 5.59:1 */
   --nr-success-tint: #E9F6EC;
-  --nr-warning: #E0A100;       /* marker only */
+  --nr-warning: #FFC107;       /* marker only; colors.md semantic set */
   --nr-warning-text: #6E4C00;  /* on --nr-warning-tint: 7.21:1 */
   --nr-warning-tint: #FFF6DB;
-  --nr-danger: #DC3545;        /* marker only */
+  --nr-danger: #DC3545;        /* marker only; colors.md --nr-error */
+  --nr-error: var(--nr-danger);
   --nr-danger-text: #A32330;   /* on --nr-danger-tint: 6.42:1 */
   --nr-danger-tint: #FCEBED;
 
@@ -128,6 +127,11 @@
   --shadow-lg: 0 2px 4px rgba(16, 24, 40, 0.06), 0 24px 64px rgba(16, 24, 40, 0.16);
 
   /* Interaction */
+  /* Focus: a solid outline, offset from the control, is the indicator; it
+     sits on the page background (3.38:1 on white, 3.10:1 on #F5F5F5). On
+     the gradient it turns white (see .hero :focus-visible). The soft ring
+     is decoration on top of it. */
+  --nr-focus: #2F99A4;
   --nr-ring: 0 0 0 4px rgba(47, 153, 164, 0.28);
   --nr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --nr-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' fill='none' stroke='%23FFFFFF' stroke-opacity='.14' stroke-width='3'%3E%3Crect x='70' y='70' width='460' height='460' rx='64'/%3E%3Crect x='150' y='150' width='300' height='300' rx='44'/%3E%3Crect x='230' y='230' width='140' height='140' rx='26'/%3E%3C/svg%3E");
@@ -135,7 +139,8 @@
 
 /* ============================================
    DARK SCHEME
-   Values from references/colors.md. The brand hues do not survive a dark
+   Values from references/colors.md ("Dark backgrounds" and "Component
+   tokens"). The brand hues do not survive a dark
    surface as text (#2F99A4 is 5.28:1 on #14181B but 3.38:1 on a lifted row),
    so the text roles lift and the non-text roles keep the brand hue. Every pair
    below is measured; the audit runs `--scheme dark` over this. The block is
@@ -166,6 +171,11 @@
     --nr-warning-tint: #33280A;     /* 9.5:1 */
     --nr-danger-text: #FFA7AE;
     --nr-danger-tint: #3A1418;      /* 8.8:1 */
+    --nr-success: #3FBF62;          /* marker, 6.60:1 on the surface */
+    --nr-warning: #F2B92A;          /* marker, 8.77:1 */
+    --nr-danger: #F0606C;           /* marker, 4.92:1 */
+    --nr-focus: #5FC6D2;            /* 7.83:1 on the surface */
+    --nr-ring: 0 0 0 4px rgba(95, 198, 210, 0.35);
 
     --nr-hero-from: #1B6C74;        /* white on it: 6.10:1 */
     --nr-hero-to: #0F4A50;          /* white on it: 9.93:1 */
@@ -209,6 +219,11 @@
   --nr-warning-tint: #33280A;
   --nr-danger-text: #FFA7AE;
   --nr-danger-tint: #3A1418;
+  --nr-success: #3FBF62;      /* marker, 6.60:1 on the surface */
+  --nr-warning: #F2B92A;      /* marker, 8.77:1 */
+  --nr-danger: #F0606C;       /* marker, 4.92:1 */
+  --nr-focus: #5FC6D2;      /* 7.83:1 on the surface */
+  --nr-ring: 0 0 0 4px rgba(95, 198, 210, 0.35);
   --nr-hero-from: #1B6C74;
   --nr-hero-to: #0F4A50;
   --nr-hero-end: #0B3539;
@@ -256,8 +271,13 @@ body {
 img, svg { max-width: 100%; }
 
 :focus-visible {
-  outline: 3px solid var(--nr-primary);
+  outline: 3px solid var(--nr-focus);
   outline-offset: 2px;
+}
+
+/* Forced-colors mode drops box-shadow; keep a system-coloured outline. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 3px solid CanvasText; }
 }
 
 .skip-link {
@@ -301,13 +321,15 @@ h2 {
 }
 
 h3 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-3xl);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
 }
 
 h4 {
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
 }
 
 p {
@@ -535,6 +557,108 @@ code, kbd {
 }
 
 /* ============================================
+   HERO SECTION
+   One bold surface per page: the petrol gradient with the nested-square
+   motif taken from the [n] frame. Left-aligned, sized to its content.
+   ============================================ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4xl) var(--spacing-lg);
+  /* Every stop carries white text, so every stop must clear 4.5:1: #257880 is
+     5.15:1, #15585E 8.11:1, #0A5057 9.14:1. The brand #2F99A4 cannot start this
+     gradient (3.38:1), and the audit cannot see it because a gradient has no
+     backgroundColor to read. */
+  background-color: var(--nr-hero-from);
+  background-image: linear-gradient(150deg, var(--nr-hero-from) 0%, var(--nr-hero-to) 58%, var(--nr-hero-end) 100%);
+  color: var(--nr-on-fill);
+  text-align: left;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -120px;
+  bottom: -160px;
+  width: 560px;
+  height: 560px;
+  background: var(--nr-motif) center / contain no-repeat;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  width: 100%;
+  max-width: 1152px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.hero-content > :not(.hero-split) { max-width: 760px; }
+
+.hero .eyebrow { color: var(--nr-on-fill); }
+.hero .hero-panel .eyebrow { color: var(--nr-primary-text); }
+.hero-panel h2 { color: var(--nr-ink); }
+
+.hero-title {
+  color: var(--nr-on-fill);
+  margin-bottom: var(--spacing-lg);
+}
+
+.hero-subtitle {
+  font-size: var(--font-size-lg);
+  line-height: 1.65;
+  margin-bottom: var(--spacing-xl);
+  color: var(--nr-on-fill);
+}
+
+.hero-cta {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* Two columns: message left, a supporting panel (facts, a form, a preview)
+   right. The panel is a solid surface, so it measures like any card. */
+.hero-split {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--spacing-xxl);
+  align-items: center;
+}
+
+.hero-panel {
+  background: var(--nr-surface);
+  color: var(--nr-text);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xl);
+  padding: 0;
+  list-style: none;
+}
+
+/* Border-only chips: the gradient stays the measured background behind the text. */
+.hero-facts li {
+  padding: 5px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--nr-on-fill);
+}
+
+/* ============================================
    BUTTONS
    ============================================ */
 .btn-primary,
@@ -569,7 +693,8 @@ code, kbd {
 .btn-outline:focus-visible,
 .btn-tonal:focus-visible,
 .btn-ghost:focus-visible {
-  outline: none;
+  outline: 3px solid var(--nr-focus);
+  outline-offset: 2px;
   box-shadow: var(--nr-ring);
 }
 
@@ -818,28 +943,28 @@ code, kbd {
   color: var(--nr-text-secondary);
 }
 
+/* Notices are a full tinted surface with an icon. No edge stripe: tint, icon
+   and words carry the state. */
 .notice {
   display: flex;
   gap: 14px;
   align-items: flex-start;
   padding: var(--spacing-md) 20px;
-  border: 1px solid var(--nr-border-light);
-  border-left: 4px solid var(--nr-primary);
   border-radius: 14px;
-  background: var(--nr-surface);
+  background: var(--nr-primary-wash);
   color: var(--nr-text);
   font-size: 15px;
 }
 
 .notice strong { display: block; color: var(--nr-ink); font-family: var(--font-headline); }
 .notice-icon { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; fill: none; stroke: var(--nr-primary-fill); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.notice-success { border-left-color: var(--nr-success); }
+.notice-success { background: var(--nr-success-tint); }
 .notice-success strong { color: var(--nr-success-text); }
 .notice-success .notice-icon { stroke: var(--nr-success-text); }
-.notice-warning { border-left-color: var(--nr-warning); }
+.notice-warning { background: var(--nr-warning-tint); }
 .notice-warning strong { color: var(--nr-warning-text); }
 .notice-warning .notice-icon { stroke: var(--nr-warning-text); }
-.notice-danger { border-left-color: var(--nr-danger); background: var(--nr-danger-tint); }
+.notice-danger { background: var(--nr-danger-tint); }
 .notice-danger strong { color: var(--nr-danger-text); }
 .notice-danger .notice-icon { stroke: var(--nr-danger-text); }
 
@@ -847,9 +972,7 @@ code, kbd {
    4.34-4.49:1 on the light tints, so every tinted container redefines it to
    --nr-text (6.05:1 or more). Meta lines, timestamps and captions inside a
    tinted notice, badge or table row stay readable without a special class. */
-.notice-danger,
-.notice-warning,
-.notice-success,
+.notice,
 .badge,
 .table tr.row-danger,
 .table tr.row-warning,
@@ -924,8 +1047,269 @@ code, kbd {
 }
 
 /* ============================================
+   FORMS
+   ============================================ */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--nr-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-help {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--nr-text-secondary);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  min-height: 48px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--nr-ink);
+  padding: 11px 14px;
+  /* The visible boundary of a form control is a UI component under SC 1.4.11 and needs
+     3:1; --nr-border is 1.59:1 and is for dividers. */
+  border: 1px solid var(--nr-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--nr-surface);
+  transition: border-color 0.15s var(--nr-ease), box-shadow 0.15s var(--nr-ease);
+}
+
+.form-input:hover,
+.form-textarea:hover,
+.form-select:hover {
+  border-color: var(--nr-text);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: 2px solid var(--nr-focus);
+  outline-offset: 1px;
+  border-color: var(--nr-primary-fill);
+  box-shadow: var(--nr-ring);
+}
+
+.form-input:user-invalid,
+.form-textarea:user-invalid {
+  border-color: var(--nr-danger);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--nr-text-secondary);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-error {
+  margin-top: 6px;
+  font-size: var(--font-size-sm);
+  color: var(--nr-danger-text);
+}
+
+/* Checkbox and radio, drawn so the box keeps a 3:1 boundary and a visible tick. */
+.form-check {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: flex-start;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+}
+
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--nr-border-strong);
+  border-radius: 6px;
+  background: var(--nr-surface);
+  cursor: pointer;
+  transition: background 0.15s var(--nr-ease), border-color 0.15s var(--nr-ease);
+}
+
+.form-check input[type="radio"] { border-radius: 50%; }
+
+.form-check input[type="checkbox"]::after {
+  content: "";
+  width: 11px;
+  height: 6px;
+  margin-top: -3px;
+  border: 2px solid var(--nr-on-fill);
+  border-top: 0;
+  border-right: 0;
+  transform: rotate(-45deg) scale(0);
+  transition: transform 0.15s var(--nr-ease);
+}
+
+.form-check input[type="radio"]::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--nr-on-fill);
+  transform: scale(0);
+  transition: transform 0.15s var(--nr-ease);
+}
+
+.form-check input:checked {
+  background: var(--nr-primary-fill);
+  border-color: var(--nr-primary-fill);
+}
+
+.form-check input:checked::after { transform: rotate(-45deg) scale(1); }
+.form-check input[type="radio"]:checked::after { transform: scale(1); }
+.form-check input:focus-visible { outline: 3px solid var(--nr-focus); outline-offset: 2px; box-shadow: var(--nr-ring); }
+
+/* Segmented control: a small set of mutually exclusive views (DE/EN, Day/Week). */
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--nr-border-light);
+  border-radius: var(--radius-pill);
+  background: var(--nr-bg-alt);
+}
+
+.segmented a,
+.segmented button {
+  min-width: 40px;
+  padding: 5px 14px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font: 600 13px/1.5 var(--font-body);
+  color: var(--nr-text);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.segmented [aria-current="page"],
+.segmented [aria-pressed="true"],
+.segmented [aria-selected="true"] {
+  background: var(--nr-surface);
+  color: var(--nr-primary-text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================
    APP LAYOUTS
    ============================================ */
+
+/* Sign-in, onboarding, request forms: brand panel left, task right. The panel
+   explains the process in real steps; the form side stays plain white. */
+.split-layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 5fr) minmax(0, 7fr);
+  min-height: calc(100vh - 73px);
+}
+
+.split-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: var(--spacing-3xl) clamp(var(--spacing-lg), 5vw, 72px);
+  background-color: var(--nr-hero-from);
+  background-image: linear-gradient(150deg, var(--nr-hero-from) 0%, var(--nr-hero-to) 58%, var(--nr-hero-end) 100%);
+  color: var(--nr-on-fill);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.split-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -200px;
+  bottom: -200px;
+  width: 480px;
+  height: 480px;
+  background: var(--nr-motif) center / contain no-repeat;
+}
+
+.split-panel h2,
+.split-panel .eyebrow { color: var(--nr-on-fill); }
+
+.split-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl) clamp(var(--spacing-lg), 5vw, 80px);
+  background: var(--nr-surface);
+}
+
+.split-main > * { width: 100%; max-width: 460px; }
+
+/* Numbered steps: only for a real sequence. */
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-lg) 0 0;
+  display: grid;
+}
+
+.steps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
+}
+
+.steps li:last-child { padding-bottom: 0; }
+
+.steps li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 40px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.step-num {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font: 700 14px var(--font-headline);
+}
+
+.steps .is-current .step-num {
+  background: var(--nr-on-fill);
+  border-color: var(--nr-on-fill);
+  color: var(--nr-on-light);
+}
+
+.step-body strong { display: block; font-family: var(--font-headline); }
+.step-body span { font-size: var(--font-size-sm); }
 
 /* App page header: a short gradient band; the first content block overlaps it. */
 .page-band {
@@ -973,6 +1357,21 @@ code, kbd {
   max-width: 1200px;
   margin: -72px auto 0;
   padding: 0 var(--spacing-lg) var(--spacing-3xl);
+}
+
+.dialog {
+  width: min(520px, calc(100% - 32px));
+  padding: var(--spacing-xl);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--nr-surface);
+  color: var(--nr-text);
+  box-shadow: var(--shadow-lg);
+}
+
+.dialog::backdrop {
+  background: rgba(10, 30, 34, 0.5);
+  backdrop-filter: blur(3px);
 }
 
 /* ============================================
@@ -1102,14 +1501,14 @@ code, kbd {
     padding: var(--spacing-md);
     border-bottom: 1px solid var(--nr-border-light);
     box-shadow: var(--shadow-md);
-    transform: translateY(-8px);
+    transform: translate3d(0, -8px, 0);
     opacity: 0;
     visibility: hidden;
     transition: transform 0.2s var(--nr-ease), opacity 0.2s var(--nr-ease), visibility 0.2s;
   }
 
   .navbar-menu.active {
-    transform: translateY(0);
+    transform: none;
     opacity: 1;
     visibility: visible;
   }
@@ -1140,6 +1539,15 @@ code, kbd {
   .hero-panel { padding: var(--spacing-lg); }
   .footer-bottom { justify-content: center; text-align: center; }
 }
+
+/* On the gradient the teal outline is 1.52:1 against #257880; use white.
+   Placed after the component rules so it wins over .btn-*:focus-visible. */
+.hero :focus-visible,
+.page-band :focus-visible,
+.split-panel :focus-visible { outline-color: var(--nr-on-fill); }
+
+/* ...but a white panel inside the hero is a light surface again. */
+.hero .hero-panel :focus-visible { outline-color: var(--nr-focus); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1172,118 +1580,75 @@ code, kbd {
 
 
 /* ============================================
-   DASHBOARD COMPONENTS
+   DASHBOARD COMPONENTS (built on the tokens above)
    ============================================ */
-.page-band .lead { color: var(--nr-on-fill); margin-bottom: var(--spacing-lg); max-width: 62ch; }
-.page-band .chips { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); list-style: none; }
-.chip {
-  display: inline-block;
-  padding: 5px 14px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  line-height: 1.5;
+.logo-plate {
+  display: block;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: #FFFFFF; /* constant plate: the logo is never recoloured, so it keeps a white ground in the dark scheme */
 }
+.logo-plate svg { display: block; width: 40px; height: 40px; }
 
-.dash { display: grid; gap: var(--spacing-xxl); }
+.page-band .band-meta { margin: 0; color: var(--nr-on-fill); font-size: var(--font-size-base); }
+.page-band .band-lead { margin: 0 0 var(--spacing-md); max-width: 62ch; color: var(--nr-on-fill); font-size: var(--font-size-lg); line-height: 1.55; }
+.band-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-sm) var(--spacing-md); }
 
-.stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.stat-value-danger { color: var(--nr-danger-text); }
-.stat-value-success { color: var(--nr-success-text); }
+.block { margin-top: var(--spacing-xxl); }
+.page-body > .block:first-child { margin-top: 0; }
+.block-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--spacing-xs) var(--spacing-lg); margin-bottom: var(--spacing-md); }
+.block-head .eyebrow { margin-bottom: 6px; }
+.block-title { font-size: var(--font-size-2xl); margin: 0; }
+.block-note { margin: 0; font-size: var(--font-size-sm); color: var(--nr-text-secondary); max-width: none; }
 
-.panel-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--spacing-xs) var(--spacing-lg);
-  margin-bottom: var(--spacing-md);
-}
-.panel-head .eyebrow { margin-bottom: 6px; }
-.panel-head h2 { font-size: var(--font-size-2xl); margin-bottom: 0; }
-.panel-meta { font-size: var(--font-size-sm); color: var(--nr-text-secondary); margin: 0; }
+.summary { padding: var(--spacing-xl); border: 1px solid var(--nr-border-light); border-radius: var(--radius-lg); background: var(--nr-surface); box-shadow: var(--shadow-md); }
+.summary p { max-width: 78ch; font-size: var(--font-size-base); }
+.summary .stat-grid { margin-top: var(--spacing-lg); }
+.summary .stat { background: var(--nr-bg-alt); box-shadow: none; padding: var(--spacing-md) var(--spacing-lg); }
+.summary .stat-value { font-size: var(--font-size-2xl); }
 
-.notice-body { min-width: 0; }
-.notice-body p { margin: 4px 0 0; max-width: 78ch; }
-.notice-actions { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); margin-top: var(--spacing-md); }
+.notice-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-sm) var(--spacing-md); margin-top: var(--spacing-sm); }
+.notice .notice-meta { display: block; margin-top: 4px; font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
+.alert-grid { display: flex; gap: 14px; align-items: flex-start; }
+.alert-grid > div { min-width: 0; }
 
-.env-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-}
-.env-head h3 { margin: 0; font-size: var(--font-size-xl); }
-.env-url { display: block; margin: -8px 0 var(--spacing-md); font-size: var(--font-size-sm); color: var(--nr-text-secondary); word-break: break-all; }
-.kv { display: grid; margin: 0; }
-.kv > div {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-  padding: 10px 0;
-  border-top: 1px solid var(--nr-border-light);
-  font-size: 15px;
-}
-.kv dt { color: var(--nr-text-secondary); flex: 0 0 auto; }
-.kv dd { margin: 0; text-align: right; color: var(--nr-ink); font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: anywhere; }
+.env-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-lg); }
+.env-card { height: auto; display: flex; flex-direction: column; }
+.env-card .card-content { flex: 1 1 auto; }
+.env-top { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+.env-top .card-title { margin: 0; }
+.env-facts { display: grid; grid-template-columns: minmax(84px, auto) minmax(0, 1fr); gap: 10px var(--spacing-md); margin: 0; font-size: 15px; }
+.env-facts dt { font-size: var(--font-size-sm); font-weight: 600; color: var(--nr-text-secondary); }
+.env-facts dd { margin: 0; color: var(--nr-text); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.env-card .card-footer .card-meta { overflow-wrap: anywhere; }
 
-.table .id { font-family: var(--font-headline); font-weight: 700; color: var(--nr-ink); white-space: nowrap; }
-.table td.nowrap { white-space: nowrap; }
-.table tr.row-danger .badge-danger { background: var(--nr-surface); }
-
-.footer { padding: var(--spacing-xl) 0; }
-.footer-bottom { border-top: 0; padding-top: 0; }
+.table .pipeline { font-family: var(--font-headline); font-weight: 700; font-variant-numeric: tabular-nums; }
+.table td code { white-space: nowrap; }
+.table .nowrap { white-space: nowrap; }
 
 @media (max-width: 1024px) {
-  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .three-column { grid-template-columns: minmax(0, 1fr); }
+  .env-grid { grid-template-columns: minmax(0, 1fr); }
+  .env-facts { grid-template-columns: minmax(96px, auto) minmax(0, 1fr); }
 }
 
-@media (max-width: 640px) {
-  .stat { padding: var(--spacing-md); }
-  .stat-value { font-size: var(--font-size-2xl); }
-  .page-band .lead { font-size: var(--font-size-base); }
+@media (max-width: 768px) {
+  .summary { padding: var(--spacing-lg); }
+  .page-band .band-lead { font-size: var(--font-size-base); }
+}
 
-  .table-wrap { border: 0; background: transparent; overflow: visible; }
-  .table, .table tbody { display: block; }
-  .table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .table tbody tr {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas: "pipe status" "branch branch" "dur started";
-    gap: 6px var(--spacing-md);
-    align-items: center;
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
-    border: 1px solid var(--nr-border-light);
-    border-radius: var(--radius-lg);
-    background: var(--nr-surface);
-    box-shadow: var(--shadow-sm);
-  }
-  .table tbody tr.row-danger { background: var(--nr-danger-tint); border-left: 4px solid var(--nr-danger); }
-  .table tbody tr:hover { background: var(--nr-surface); }
-  .table tbody tr.row-danger:hover { background: var(--nr-danger-tint); }
-  .table td { padding: 0; border: 0; display: block; }
-  .table tr.row-danger td { background: transparent; }
-  .table td:nth-child(1) { grid-area: pipe; }
-  .table td:nth-child(2) { grid-area: branch; }
-  .table td:nth-child(3) { grid-area: status; justify-self: end; }
-  .table td:nth-child(4) { grid-area: dur; }
-  .table td:nth-child(5) { grid-area: started; text-align: right; }
-  .table td[data-label]::before {
-    content: attr(data-label);
-    display: block;
-    font-size: var(--font-size-xs);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--nr-text-secondary);
-  }
-  .table .num { text-align: left; }
-  .notice { padding: var(--spacing-md); gap: var(--spacing-sm); }
-  .notice-actions > * { flex: 1 1 100%; }
-  .footer-bottom { justify-content: flex-start; text-align: left; }
+/* Builds table becomes a list of labelled rows on a phone, so the page never scrolls sideways. */
+@media (max-width: 640px) {
+  .table-stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .table-stack, .table-stack tbody, .table-stack tr, .table-stack td { display: block; width: 100%; }
+  .table-stack tr { padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--nr-border-light); }
+  .table-stack tr:last-child { border-bottom: 0; }
+  .table-stack td { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); padding: 6px var(--spacing-md); border-bottom: 0; text-align: right; }
+  .table-stack td::before { content: attr(data-label); flex: 0 0 auto; font-size: var(--font-size-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--nr-text-secondary); text-align: left; }
+  .table-stack .num { text-align: right; }
+  .alert-grid { flex-direction: column; gap: var(--spacing-xs); }
+  .notice-actions .btn-tonal { width: 100%; }
 }
   </style>
 </head>
@@ -1293,7 +1658,7 @@ code, kbd {
   <nav class="navbar" aria-label="Main">
     <div class="navbar-container">
       <a class="navbar-brand" href="https://www.netresearch.de/">
-        <svg class="navbar-logo" width="40" height="40"
+        <span class="logo-plate"><svg width="40" height="40" role="img" aria-label="Netresearch"
    viewBox="-75 -75 440 440"
    zoomAndPan="disable"
    version="1.2"
@@ -1310,157 +1675,138 @@ code, kbd {
        d="M221.44,120.41c0-34.48-13.94-57.82-48.93-57.82-26.62,0-48.54,7.74-64.17,26.56l-.7-22.06-28.31.06V232.94h31.59V124.69c7.14-18.38,32.14-34.8,53-34.5,27.38.4,25.2,26.24,26,45.81v96.94h31.58"
        transform="translate(-0.39 -0.04)" />
   </g>
-</svg>
-        <span class="navbar-wordmark">Netresearch<small>DataSync status</small></span>
+</svg></span>
+        <span class="navbar-wordmark">DataSync<small>Netresearch</small></span>
       </a>
 
-      <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-menu">
+      <button class="navbar-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-menu">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
       <ul class="navbar-menu" id="nav-menu">
-        <li><a href="#overview" class="navbar-link" aria-current="page">Overview</a></li>
-        <li><a href="#alerts" class="navbar-link">Alerts</a></li>
-        <li><a href="#deployments" class="navbar-link">Deployments</a></li>
+        <li><a href="#overview" class="navbar-link active" aria-current="page">Overview</a></li>
+        <li><a href="#environments" class="navbar-link">Environments</a></li>
         <li><a href="#builds" class="navbar-link">Builds</a></li>
       </ul>
     </div>
   </nav>
 
   <main id="main">
-    <header class="page-band on-gradient" id="overview">
+    <header class="page-band">
       <div class="page-band-inner">
         <p class="eyebrow">Build and deployment status</p>
         <h1>DataSync</h1>
-        <p class="lead">
-          The latest build on <code>main</code> failed in the integration tests. Production runs v2.14.3 and staging runs build #48211, both healthy. The review environment is deploying build #48218.
-        </p>
-        <ul class="chips" aria-label="Data notes">
-          <li class="chip">Example data</li>
-          <li class="chip">Snapshot 13 Oct 2026, 10:06 CEST</li>
-        </ul>
+        <p class="band-lead">Pipelines and environments of the DataSync project at a glance.</p>
+        <div class="band-row">
+          <span class="badge badge-accent">Example data</span>
+          <p class="band-meta">Status as of 13 Oct 2026, 14:05 CEST</p>
+        </div>
       </div>
     </header>
 
-    <div class="page-body dash">
-      <section aria-label="Summary">
-        <div class="stat-grid">
-          <div class="stat">
-            <span class="stat-label">Latest build on main</span>
-            <span class="stat-value stat-value-danger">Failed</span>
-            <span class="stat-meta">#48217, 13 Oct 09:41</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Success rate, 7 days</span>
-            <span class="stat-value">86 %</span>
-            <span class="stat-meta">55 of 64 builds passed</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Median duration</span>
-            <span class="stat-value">7 min 48 s</span>
-            <span class="stat-meta">Builds on main, 7 days</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Environments healthy</span>
-            <span class="stat-value">2 of 3</span>
-            <span class="stat-meta">Review is deploying</span>
+    <div class="page-body">
+      <section class="block" id="overview" aria-labelledby="overview-title">
+        <div class="summary">
+          <p class="eyebrow">Summary</p>
+          <h2 id="overview-title" class="block-title mb-sm">Current state</h2>
+          <p>Production runs v2.14.3 and is healthy. Build #4821 on <code>feature/retry-backoff</code> failed in the integration tests, and its review environment still serves the previous commit. Staging is deploying <code>release/2.15</code>, and build #4822 on <code>main</code> is running.</p>
+          <div class="stat-grid">
+            <div class="stat"><span class="stat-label">Passed</span><span class="stat-value">5 of 8</span><span class="stat-meta">last 8 builds</span></div>
+            <div class="stat"><span class="stat-label">Failed</span><span class="stat-value">1</span><span class="stat-meta">#4821, 13 Oct 13:41</span></div>
+            <div class="stat"><span class="stat-label">Average duration</span><span class="stat-value">11m 08s</span><span class="stat-meta">5 passed builds</span></div>
+            <div class="stat"><span class="stat-label">Production</span><span class="stat-value">v2.14.3</span><span class="stat-meta">deployed 12 Oct 18:04</span></div>
           </div>
         </div>
       </section>
 
-      <section id="alerts" aria-labelledby="alerts-title">
-        <div class="panel-head">
+      <section class="block" aria-labelledby="alert-title">
+        <div class="notice notice-danger">
+          <svg class="notice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 22 20.5H2z"/><path d="M12 10v5M12 17.8v.2"/></svg>
           <div>
-            <p class="eyebrow">Alerts</p>
-            <h2 id="alerts-title">1 open alert</h2>
-          </div>
-          <p class="panel-meta">Example data</p>
-        </div>
-        <div class="notice notice-danger" role="alert">
-          <svg class="notice-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5M12 16.2v.1"/></svg>
-          <div class="notice-body">
-            <strong>Build #48217 on main failed</strong>
-            <p>Job <code>test:integration</code> in the test stage reported 3 of 412 tests failed (<code>SyncBatchRetryTest</code>, <code>SchemaMappingTest</code>). The build started 13 Oct 2026 at 09:41 and stopped after 6 min 42 s. Staging stays on build #48211 and production is not affected.</p>
+            <strong id="alert-title">Build #4821 failed on feature/retry-backoff</strong>
+            Stage <code>test:integration</code> ended with 2 failed tests (<code>RetryPolicyTest</code>, <code>BackoffJitterTest</code>) after 6m 42s. The review environment was not updated.
+            <span class="notice-meta">Started 13 Oct 2026, 13:41 CEST · commit 9c41e7a</span>
             <div class="notice-actions">
-              <a href="#builds" class="btn-tonal btn-small">Open pipeline #48217</a>
-              <a href="#builds" class="btn-ghost btn-small">Retry failed job</a>
+              <a class="btn-tonal btn-small" href="#builds">Show build in list</a>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="deployments" aria-labelledby="deployments-title">
-        <div class="panel-head">
+      <section class="block" id="environments" aria-labelledby="env-title">
+        <div class="block-head">
           <div>
             <p class="eyebrow">Deployments</p>
-            <h2 id="deployments-title">Environments</h2>
+            <h2 id="env-title" class="block-title">Environments</h2>
           </div>
-          <p class="panel-meta">3 environments · Example data</p>
+          <p class="block-note">3 environments</p>
         </div>
-        <div class="three-column">
-          <article class="card">
+
+        <div class="env-grid">
+          <article class="card env-card">
             <div class="card-content">
-              <div class="env-head">
-                <h3>Production</h3>
+              <div class="env-top">
+                <h3 class="card-title">Production</h3>
                 <span class="badge badge-success">Healthy</span>
               </div>
-              <span class="env-url">datasync.example.com</span>
-              <dl class="kv">
-                <div><dt>Version</dt><dd>v2.14.3</dd></div>
-                <div><dt>Build</dt><dd>#48199</dd></div>
-                <div><dt>Branch</dt><dd>release/2.14</dd></div>
-                <div><dt>Deployed</dt><dd>11 Oct 2026, 10:05</dd></div>
+              <dl class="env-facts">
+                <dt>Version</dt><dd>v2.14.3</dd>
+                <dt>Source</dt><dd>#4817 · <code>main</code></dd>
+                <dt>Deployed</dt><dd>12 Oct 2026, 18:04</dd>
+                <dt>Health check</dt><dd>200 OK, 14:04</dd>
               </dl>
             </div>
+            <div class="card-footer"><span class="card-meta">app.datasync.example</span></div>
           </article>
 
-          <article class="card">
+          <article class="card env-card">
             <div class="card-content">
-              <div class="env-head">
-                <h3>Staging</h3>
-                <span class="badge badge-success">Healthy</span>
-              </div>
-              <span class="env-url">staging.datasync.example.com</span>
-              <dl class="kv">
-                <div><dt>Version</dt><dd>v2.15.0-rc.1</dd></div>
-                <div><dt>Build</dt><dd>#48211</dd></div>
-                <div><dt>Branch</dt><dd>main</dd></div>
-                <div><dt>Deployed</dt><dd>12 Oct 2026, 17:42</dd></div>
-              </dl>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-content">
-              <div class="env-head">
-                <h3>Review</h3>
+              <div class="env-top">
+                <h3 class="card-title">Staging</h3>
                 <span class="badge badge-info">Deploying</span>
               </div>
-              <span class="env-url">mr-312.review.datasync.example.com</span>
-              <dl class="kv">
-                <div><dt>Version</dt><dd>2.15.0-dev+mr312</dd></div>
-                <div><dt>Build</dt><dd>#48218</dd></div>
-                <div><dt>Branch</dt><dd>feature/export-csv-headers</dd></div>
-                <div><dt>Deploy started</dt><dd>13 Oct 2026, 10:03</dd></div>
+              <dl class="env-facts">
+                <dt>Version</dt><dd>v2.15.0-rc.1</dd>
+                <dt>Source</dt><dd>#4819 · <code>release/2.15</code></dd>
+                <dt>Deploy started</dt><dd>13 Oct 2026, 14:02</dd>
+                <dt>Previous</dt><dd>v2.14.3</dd>
               </dl>
             </div>
+            <div class="card-footer"><span class="card-meta">staging.datasync.example</span></div>
+          </article>
+
+          <article class="card env-card">
+            <div class="card-content">
+              <div class="env-top">
+                <h3 class="card-title">Review</h3>
+                <span class="badge badge-warning">Outdated</span>
+              </div>
+              <dl class="env-facts">
+                <dt>Branch</dt><dd><code>feature/retry-backoff</code></dd>
+                <dt>Commit</dt><dd>7be2d40</dd>
+                <dt>Deployed</dt><dd>13 Oct 2026, 09:52</dd>
+                <dt>Newer build</dt><dd>#4821 failed, not deployed</dd>
+              </dl>
+            </div>
+            <div class="card-footer"><span class="card-meta">retry-backoff.review.datasync.example</span></div>
           </article>
         </div>
       </section>
 
-      <section id="builds" aria-labelledby="builds-title">
-        <div class="panel-head">
+      <section class="block" id="builds" aria-labelledby="builds-title">
+        <div class="block-head">
           <div>
-            <p class="eyebrow">Builds</p>
-            <h2 id="builds-title">Latest builds</h2>
+            <p class="eyebrow">Pipelines</p>
+            <h2 id="builds-title" class="block-title">Latest builds</h2>
           </div>
-          <p class="panel-meta">7 most recent pipelines · Example data</p>
+          <p class="block-note">Last 8 pipelines · times in CEST · example data</p>
         </div>
+
         <div class="table-wrap">
-          <table class="table">
-            <caption class="visually-hidden">Latest DataSync builds (example data)</caption>
+          <table class="table table-stack">
+            <caption class="visually-hidden">Latest 8 DataSync pipelines with branch, status, duration and start time</caption>
             <thead>
               <tr>
                 <th scope="col">Pipeline</th>
@@ -1472,53 +1818,60 @@ code, kbd {
             </thead>
             <tbody>
               <tr>
-                <td class="id">#48218</td>
-                <td><code>feature/export-csv-headers</code></td>
-                <td><span class="badge badge-info">Running</span></td>
-                <td class="num nowrap" data-label="Duration">2 min 10 s so far</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-13T10:03">13 Oct, 10:03</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4822</a></td>
+                <td data-label="Branch"><code>main</code></td>
+                <td data-label="Status"><span class="badge badge-info">Running</span></td>
+                <td data-label="Duration" class="num">2m 31s</td>
+                <td data-label="Started" class="nowrap">13 Oct, 14:01</td>
               </tr>
               <tr class="row-danger">
-                <td class="id">#48217</td>
-                <td><code>main</code></td>
-                <td><span class="badge badge-danger">Failed</span></td>
-                <td class="num nowrap" data-label="Duration">6 min 42 s</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-13T09:41">13 Oct, 09:41</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4821</a></td>
+                <td data-label="Branch"><code>feature/retry-backoff</code></td>
+                <td data-label="Status"><span class="badge badge-danger">Failed</span></td>
+                <td data-label="Duration" class="num">6m 42s</td>
+                <td data-label="Started" class="nowrap">13 Oct, 13:41</td>
               </tr>
               <tr>
-                <td class="id">#48214</td>
-                <td><code>feature/delta-sync-retries</code></td>
-                <td><span class="badge badge-success">Passed</span></td>
-                <td class="num nowrap" data-label="Duration">8 min 05 s</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-13T09:12">13 Oct, 09:12</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4820</a></td>
+                <td data-label="Branch"><code>main</code></td>
+                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+                <td data-label="Duration" class="num">11m 08s</td>
+                <td data-label="Started" class="nowrap">13 Oct, 13:12</td>
               </tr>
               <tr>
-                <td class="id">#48211</td>
-                <td><code>main</code></td>
-                <td><span class="badge badge-success">Passed</span></td>
-                <td class="num nowrap" data-label="Duration">7 min 48 s</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-12T17:30">12 Oct, 17:30</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4819</a></td>
+                <td data-label="Branch"><code>release/2.15</code></td>
+                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+                <td data-label="Duration" class="num">12m 20s</td>
+                <td data-label="Started" class="nowrap">13 Oct, 10:56</td>
               </tr>
               <tr>
-                <td class="id">#48209</td>
-                <td><code>fix/schema-drift-null</code></td>
-                <td><span class="badge badge-success">Passed</span></td>
-                <td class="num nowrap" data-label="Duration">5 min 31 s</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-12T15:58">12 Oct, 15:58</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4818</a></td>
+                <td data-label="Branch"><code>feature/schema-diff</code></td>
+                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+                <td data-label="Duration" class="num">9m 47s</td>
+                <td data-label="Started" class="nowrap">13 Oct, 09:30</td>
               </tr>
               <tr>
-                <td class="id">#48206</td>
-                <td><code>feature/export-csv-headers</code></td>
-                <td><span class="badge">Canceled</span></td>
-                <td class="num nowrap" data-label="Duration">1 min 12 s</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-12T14:20">12 Oct, 14:20</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4817</a></td>
+                <td data-label="Branch"><code>main</code></td>
+                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+                <td data-label="Duration" class="num">10m 52s</td>
+                <td data-label="Started" class="nowrap">12 Oct, 17:48</td>
               </tr>
               <tr>
-                <td class="id">#48199</td>
-                <td><code>release/2.14</code></td>
-                <td><span class="badge badge-success">Passed</span></td>
-                <td class="num nowrap" data-label="Duration">9 min 16 s</td>
-                <td class="nowrap" data-label="Started"><time datetime="2026-10-11T09:48">11 Oct, 09:48</time></td>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4816</a></td>
+                <td data-label="Branch"><code>fix/cursor-reset</code></td>
+                <td data-label="Status"><span class="badge">Canceled</span></td>
+                <td data-label="Duration" class="num">1m 14s</td>
+                <td data-label="Started" class="nowrap">12 Oct, 16:20</td>
+              </tr>
+              <tr>
+                <td data-label="Pipeline"><a class="pipeline" href="#builds">#4815</a></td>
+                <td data-label="Branch"><code>main</code></td>
+                <td data-label="Status"><span class="badge badge-success">Passed</span></td>
+                <td data-label="Duration" class="num">11m 31s</td>
+                <td data-label="Started" class="nowrap">12 Oct, 11:03</td>
               </tr>
             </tbody>
           </table>
@@ -1528,21 +1881,38 @@ code, kbd {
   </main>
 
   <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>DataSync</h4>
+        <ul>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#environments">Environments</a></li>
+          <li><a href="#builds">Builds</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>About this page</h4>
+        <ul>
+          <li>All pipelines, versions, hosts and times on this page are example data.</li>
+        </ul>
+      </div>
+    </div>
+
     <div class="footer-bottom">
-      <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a></p>
-      <p>All figures on this page are example data.</p>
+      <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a>. All rights reserved.</p>
+      <p>Nonnenstraße 11d · 04229 Leipzig</p>
     </div>
   </footer>
 
   <script>
-    const toggle = document.querySelector('.navbar-toggle');
-    const menu = document.querySelector('.navbar-menu');
-    toggle.addEventListener('click', () => {
-      const open = menu.classList.toggle('active');
+    var toggle = document.querySelector('.navbar-toggle');
+    var menu = document.querySelector('.navbar-menu');
+    toggle.addEventListener('click', function () {
+      var open = menu.classList.toggle('active');
       toggle.setAttribute('aria-expanded', String(open));
     });
-    document.querySelectorAll('.navbar-menu a[href^="#"]').forEach(a => {
-      a.addEventListener('click', () => {
+    document.querySelectorAll('.navbar-menu a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function () {
         menu.classList.remove('active');
         toggle.setAttribute('aria-expanded', 'false');
       });

@@ -12,12 +12,10 @@
  * Netresearch Brand Styles
  * Complete CSS template following brand guidelines.
  *
- * Design treatment: modern by default (see references/web-design.md,
- * "Design treatment"). Brand tokens and hard rules are unchanged; what this
- * file adds is the contemporary layer on top of them: hairline borders and
- * layered soft shadows instead of heavy drop shadows, 10/16px radii, focus
- * rings instead of hover jumps, opaque status tints, and the petrol gradient
- * with the nested-square motif as the one bold surface per page.
+ * How a branded page is built: see references/web-design.md. Hairline
+ * borders with layered soft shadows, 10/16/24px radii, focus outlines instead
+ * of hover jumps, opaque status tints without edge stripes, and the petrol
+ * gradient with the nested-square motif as the one bold surface per page.
  *
  * Every class name of the previous template is still defined, so pages built
  * on it keep working.
@@ -42,7 +40,7 @@
      dark scheme, where white over it would fail with nothing able to measure it. */
   --nr-hero-from: #257880;    /* white on it: 5.15:1 */
   --nr-hero-to: #15585E;      /* white on it: 8.11:1 */
-  --nr-hero-end: #0A5057;     /* third stop of the modern gradient: 9.14:1 */
+  --nr-hero-end: #0A5057;     /* third stop of the hero gradient: 9.14:1 */
   /* A button's hover is a surface too, for the same reason. */
   --nr-primary-fill-hover: #15585E;
   --nr-accent-fill-hover: #9A2E00;
@@ -57,13 +55,14 @@
   --nr-primary-tint: #E6F2F3;  /* --nr-primary-text on it: 7.09:1 */
   --nr-primary-wash: #F3F9F9;  /* the lightest teal surface */
   --nr-accent-tint: #FFF0E8;   /* --nr-accent-text on it: 6.83:1 */
-  --nr-success: #28A745;       /* marker only */
+  --nr-success: #28A745;       /* marker only; colors.md semantic set */
   --nr-success-text: #1E6F31;  /* on --nr-success-tint: 5.59:1 */
   --nr-success-tint: #E9F6EC;
-  --nr-warning: #E0A100;       /* marker only */
+  --nr-warning: #FFC107;       /* marker only; colors.md semantic set */
   --nr-warning-text: #6E4C00;  /* on --nr-warning-tint: 7.21:1 */
   --nr-warning-tint: #FFF6DB;
-  --nr-danger: #DC3545;        /* marker only */
+  --nr-danger: #DC3545;        /* marker only; colors.md --nr-error */
+  --nr-error: var(--nr-danger);
   --nr-danger-text: #A32330;   /* on --nr-danger-tint: 6.42:1 */
   --nr-danger-tint: #FCEBED;
 
@@ -128,6 +127,11 @@
   --shadow-lg: 0 2px 4px rgba(16, 24, 40, 0.06), 0 24px 64px rgba(16, 24, 40, 0.16);
 
   /* Interaction */
+  /* Focus: a solid outline, offset from the control, is the indicator; it
+     sits on the page background (3.38:1 on white, 3.10:1 on #F5F5F5). On
+     the gradient it turns white (see .hero :focus-visible). The soft ring
+     is decoration on top of it. */
+  --nr-focus: #2F99A4;
   --nr-ring: 0 0 0 4px rgba(47, 153, 164, 0.28);
   --nr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --nr-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' fill='none' stroke='%23FFFFFF' stroke-opacity='.14' stroke-width='3'%3E%3Crect x='70' y='70' width='460' height='460' rx='64'/%3E%3Crect x='150' y='150' width='300' height='300' rx='44'/%3E%3Crect x='230' y='230' width='140' height='140' rx='26'/%3E%3C/svg%3E");
@@ -135,7 +139,8 @@
 
 /* ============================================
    DARK SCHEME
-   Values from references/colors.md. The brand hues do not survive a dark
+   Values from references/colors.md ("Dark backgrounds" and "Component
+   tokens"). The brand hues do not survive a dark
    surface as text (#2F99A4 is 5.28:1 on #14181B but 3.38:1 on a lifted row),
    so the text roles lift and the non-text roles keep the brand hue. Every pair
    below is measured; the audit runs `--scheme dark` over this. The block is
@@ -166,6 +171,11 @@
     --nr-warning-tint: #33280A;     /* 9.5:1 */
     --nr-danger-text: #FFA7AE;
     --nr-danger-tint: #3A1418;      /* 8.8:1 */
+    --nr-success: #3FBF62;          /* marker, 6.60:1 on the surface */
+    --nr-warning: #F2B92A;          /* marker, 8.77:1 */
+    --nr-danger: #F0606C;           /* marker, 4.92:1 */
+    --nr-focus: #5FC6D2;            /* 7.83:1 on the surface */
+    --nr-ring: 0 0 0 4px rgba(95, 198, 210, 0.35);
 
     --nr-hero-from: #1B6C74;        /* white on it: 6.10:1 */
     --nr-hero-to: #0F4A50;          /* white on it: 9.93:1 */
@@ -209,6 +219,11 @@
   --nr-warning-tint: #33280A;
   --nr-danger-text: #FFA7AE;
   --nr-danger-tint: #3A1418;
+  --nr-success: #3FBF62;      /* marker, 6.60:1 on the surface */
+  --nr-warning: #F2B92A;      /* marker, 8.77:1 */
+  --nr-danger: #F0606C;       /* marker, 4.92:1 */
+  --nr-focus: #5FC6D2;      /* 7.83:1 on the surface */
+  --nr-ring: 0 0 0 4px rgba(95, 198, 210, 0.35);
   --nr-hero-from: #1B6C74;
   --nr-hero-to: #0F4A50;
   --nr-hero-end: #0B3539;
@@ -256,8 +271,13 @@ body {
 img, svg { max-width: 100%; }
 
 :focus-visible {
-  outline: 3px solid var(--nr-primary);
+  outline: 3px solid var(--nr-focus);
   outline-offset: 2px;
+}
+
+/* Forced-colors mode drops box-shadow; keep a system-coloured outline. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 3px solid CanvasText; }
 }
 
 .skip-link {
@@ -301,13 +321,15 @@ h2 {
 }
 
 h3 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-3xl);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
 }
 
 h4 {
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
 }
 
 p {
@@ -671,7 +693,8 @@ code, kbd {
 .btn-outline:focus-visible,
 .btn-tonal:focus-visible,
 .btn-ghost:focus-visible {
-  outline: none;
+  outline: 3px solid var(--nr-focus);
+  outline-offset: 2px;
   box-shadow: var(--nr-ring);
 }
 
@@ -920,30 +943,43 @@ code, kbd {
   color: var(--nr-text-secondary);
 }
 
+/* Notices are a full tinted surface with an icon. No edge stripe: tint, icon
+   and words carry the state. */
 .notice {
   display: flex;
   gap: 14px;
   align-items: flex-start;
   padding: var(--spacing-md) 20px;
-  border: 1px solid var(--nr-border-light);
-  border-left: 4px solid var(--nr-primary);
   border-radius: 14px;
-  background: var(--nr-surface);
+  background: var(--nr-primary-wash);
   color: var(--nr-text);
   font-size: 15px;
 }
 
 .notice strong { display: block; color: var(--nr-ink); font-family: var(--font-headline); }
 .notice-icon { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; fill: none; stroke: var(--nr-primary-fill); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.notice-success { border-left-color: var(--nr-success); }
+.notice-success { background: var(--nr-success-tint); }
 .notice-success strong { color: var(--nr-success-text); }
 .notice-success .notice-icon { stroke: var(--nr-success-text); }
-.notice-warning { border-left-color: var(--nr-warning); }
+.notice-warning { background: var(--nr-warning-tint); }
 .notice-warning strong { color: var(--nr-warning-text); }
 .notice-warning .notice-icon { stroke: var(--nr-warning-text); }
-.notice-danger { border-left-color: var(--nr-danger); background: var(--nr-danger-tint); }
+.notice-danger { background: var(--nr-danger-tint); }
 .notice-danger strong { color: var(--nr-danger-text); }
 .notice-danger .notice-icon { stroke: var(--nr-danger-text); }
+
+/* Text on tints. --nr-text-secondary (#6E6F78) is 4.99:1 on white but only
+   4.34-4.49:1 on the light tints, so every tinted container redefines it to
+   --nr-text (6.05:1 or more). Meta lines, timestamps and captions inside a
+   tinted notice, badge or table row stay readable without a special class. */
+.notice,
+.badge,
+.table tr.row-danger,
+.table tr.row-warning,
+.table tr.row-success,
+.tinted {
+  --nr-text-secondary: var(--nr-text);
+}
 
 /* ============================================
    TABLES
@@ -982,6 +1018,11 @@ code, kbd {
 .table tr:last-child td { border-bottom: 0; }
 .table tbody tr:hover { background: var(--nr-primary-wash); }
 .table .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* A row that carries a state gets the opaque tint; see "Text on tints". */
+.table tr.row-danger td { background: var(--nr-danger-tint); }
+.table tr.row-warning td { background: var(--nr-warning-tint); }
+.table tr.row-success td { background: var(--nr-success-tint); }
 
 /* ============================================
    LINKS
@@ -1054,7 +1095,8 @@ code, kbd {
 .form-input:focus,
 .form-textarea:focus,
 .form-select:focus {
-  outline: none;
+  outline: 2px solid var(--nr-focus);
+  outline-offset: 1px;
   border-color: var(--nr-primary-fill);
   box-shadow: var(--nr-ring);
 }
@@ -1137,7 +1179,7 @@ code, kbd {
 
 .form-check input:checked::after { transform: rotate(-45deg) scale(1); }
 .form-check input[type="radio"]:checked::after { transform: scale(1); }
-.form-check input:focus-visible { outline: none; box-shadow: var(--nr-ring); }
+.form-check input:focus-visible { outline: 3px solid var(--nr-focus); outline-offset: 2px; box-shadow: var(--nr-ring); }
 
 /* Segmented control: a small set of mutually exclusive views (DE/EN, Day/Week). */
 .segmented {
@@ -1294,6 +1336,19 @@ code, kbd {
 
 .page-band h1,
 .page-band .eyebrow { color: var(--nr-on-fill); }
+
+/* On the gradient, chips and inline code are border-only, never an rgba()
+   fill: a translucent fill lightens the stop under white text (white on
+   #257880 lifted by 15% white is 3.9:1) and no audit can measure it. */
+.hero code,
+.page-band code,
+.split-panel code,
+.on-gradient code,
+.on-gradient .chip {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: var(--nr-on-fill);
+}
 .page-band h1 { font-size: var(--font-size-4xl); margin-bottom: var(--spacing-xs); }
 .page-band-inner { max-width: 1152px; margin: 0 auto; }
 
@@ -1446,14 +1501,14 @@ code, kbd {
     padding: var(--spacing-md);
     border-bottom: 1px solid var(--nr-border-light);
     box-shadow: var(--shadow-md);
-    transform: translateY(-8px);
+    transform: translate3d(0, -8px, 0);
     opacity: 0;
     visibility: hidden;
     transition: transform 0.2s var(--nr-ease), opacity 0.2s var(--nr-ease), visibility 0.2s;
   }
 
   .navbar-menu.active {
-    transform: translateY(0);
+    transform: none;
     opacity: 1;
     visibility: visible;
   }
@@ -1485,6 +1540,15 @@ code, kbd {
   .footer-bottom { justify-content: center; text-align: center; }
 }
 
+/* On the gradient the teal outline is 1.52:1 against #257880; use white.
+   Placed after the component rules so it wins over .btn-*:focus-visible. */
+.hero :focus-visible,
+.page-band :focus-visible,
+.split-panel :focus-visible { outline-color: var(--nr-on-fill); }
+
+/* ...but a white panel inside the hero is a light surface again. */
+.hero .hero-panel :focus-visible { outline-color: var(--nr-focus); }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
@@ -1514,37 +1578,52 @@ code, kbd {
   white-space: nowrap;
 }
 
+
 /* ============================================
    PAGE-SPECIFIC
    ============================================ */
-.navbar-logo { height: 40px; width: 40px; }
-.navbar-container .btn-tonal { white-space: nowrap; }
+.navbar-actions { display: flex; align-items: center; gap: var(--spacing-sm); }
+.navbar-actions .nav-hint { font-size: var(--font-size-sm); color: var(--nr-text-secondary); }
 
-.split-layout { min-height: min(760px, calc(100vh - 73px)); }
-.split-panel h2 { font-size: clamp(var(--font-size-3xl), 2.6vw, 40px); max-width: 16ch; }
-.split-panel .lead { color: var(--nr-on-fill); max-width: 40ch; margin-bottom: 0; }
+.split-panel h1 {
+  color: var(--nr-on-fill);
+  font-size: clamp(32px, 3.2vw, 44px);
+  margin-bottom: var(--spacing-md);
+}
+.split-panel .panel-intro { font-size: var(--font-size-lg); line-height: 1.6; max-width: 46ch; margin-bottom: 0; }
 .split-panel .steps { margin-top: var(--spacing-xl); }
-.split-panel .step-body strong { font-size: var(--font-size-lg); }
-.split-panel .step-body span { color: var(--nr-on-fill); }
+.split-panel .step-body strong { font-size: var(--font-size-lg); margin-bottom: 2px; }
+.split-panel .step-body span { font-size: 15px; line-height: 1.5; display: block; max-width: 40ch; }
+.panel-inner { width: 100%; max-width: 520px; margin-left: auto; }
 
-.split-main > * { max-width: 480px; }
-.split-main h1 { font-size: clamp(var(--font-size-3xl), 2.6vw, 40px); margin-bottom: var(--spacing-sm); }
-.split-main .lead { font-size: var(--font-size-base); margin-bottom: var(--spacing-xl); }
-.split-main .form-group.form-check { margin-bottom: var(--spacing-md); }
-.consent-group { margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--nr-border-light); }
-.form-actions { margin-top: var(--spacing-lg); }
-.signin-line { margin: var(--spacing-lg) 0 0; font-size: var(--font-size-sm); }
-.req { color: var(--nr-accent-text); font-weight: 700; }
-.form-note { margin: var(--spacing-md) 0 0; font-size: 13px; color: var(--nr-text-secondary); }
+.form-head { margin-bottom: var(--spacing-lg); }
+.form-head h2 { font-size: var(--font-size-4xl); margin-bottom: var(--spacing-xs); }
+.form-head p { margin-bottom: 0; }
+.form .form-check { margin-bottom: var(--spacing-md); }
+.form .form-check label { color: var(--nr-text); }
+.form .req { color: var(--nr-accent-text); font-weight: 700; }
+.form-submit { margin-top: var(--spacing-lg); }
+.form-alt { margin-top: var(--spacing-lg); margin-bottom: 0; font-size: 15px; text-align: left; }
+.form-alt a { font-family: var(--font-headline); font-weight: 700; }
 
-.facts-section .section-header { margin-bottom: var(--spacing-xl); }
-.facts-section .card-title { font-size: var(--font-size-lg); }
-.facts-section .card-text { margin-bottom: 0; }
+.facts-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-lg); }
+.facts-grid .card { height: auto; }
+.facts-grid .card-title { font-size: var(--font-size-xl); }
+.facts-grid .card-text { margin-bottom: 0; }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .panel-inner { margin-left: 0; }
+  .facts-grid { grid-template-columns: minmax(0, 1fr); }
+  .split-main > * { max-width: 560px; }
+  .split-main { justify-content: flex-start; }
+}
+@media (max-width: 600px) {
+  .navbar-actions .nav-hint { display: none; }
   .split-main { padding: var(--spacing-xxl) var(--spacing-md); }
   .split-panel { padding: var(--spacing-xxl) var(--spacing-md); }
-  .navbar-brand .navbar-wordmark { font-size: var(--font-size-base); }
+  .form-head h2 { font-size: var(--font-size-3xl); }
+  .section { padding: var(--spacing-3xl) 0; }
+  .navbar-wordmark { font-size: var(--font-size-base); }
 }
   </style>
 </head>
@@ -1553,8 +1632,8 @@ code, kbd {
 
   <nav class="navbar" aria-label="Main">
     <div class="navbar-container">
-      <a class="navbar-brand" href="https://www.netresearch.de/">
-        <svg class="navbar-logo" width="40" height="40" role="img" aria-label="Netresearch" focusable="false"
+      <a class="navbar-brand" href="https://www.netresearch.de/" aria-label="Netresearch, Kursportal">
+        <svg class="navbar-logo" width="40" height="40" role="img" aria-label="Netresearch"
    viewBox="-75 -75 440 440"
    zoomAndPan="disable"
    version="1.2"
@@ -1571,95 +1650,96 @@ code, kbd {
        transform="translate(-0.39 -0.04)" />
   </g>
 </svg>
-        <span class="navbar-wordmark">Kursportal<small>Netresearch</small></span>
+        <span class="navbar-wordmark">Kursportal<small>by Netresearch</small></span>
       </a>
-      <a href="#signin" class="btn-tonal btn-small">Sign in</a>
+      <div class="navbar-actions">
+        <span class="nav-hint">Already registered?</span>
+        <a href="#sign-in" class="btn-tonal btn-small">Sign in</a>
+      </div>
     </div>
   </nav>
 
   <main id="main">
     <div class="split-layout">
-      <aside class="split-panel" aria-labelledby="process-title">
-        <p class="eyebrow">How it works</p>
-        <h2 id="process-title">From course package to a tested course</h2>
-        <p class="lead">You hand over the files. We prepare the course and give you a link to try it.</p>
-        <ol class="steps">
-          <li class="is-current"><span class="step-num" aria-hidden="true">1</span><span class="step-body"><strong>Create your account</strong><span>Register with your name and work email address.</span></span></li>
-          <li><span class="step-num" aria-hidden="true">2</span><span class="step-body"><strong>Upload the course ZIP</strong><span>Send your e-learning package as a single ZIP file.</span></span></li>
-          <li><span class="step-num" aria-hidden="true">3</span><span class="step-body"><strong>Test the prepared course</strong><span>Open the prepared course, try it out and tell us what to adjust.</span></span></li>
-        </ol>
-      </aside>
+      <!-- Brand panel: the page's one bold surface, carries the real sequence -->
+      <section class="split-panel" aria-labelledby="panel-title">
+        <div class="panel-inner">
+          <p class="eyebrow">Course handover</p>
+          <h1 id="panel-title">Hand over your e-learning courses in three steps</h1>
+          <p class="panel-intro">Send us your course package and test the prepared course in your browser. No setup on your side.</p>
+          <ol class="steps">
+            <li class="is-current"><span class="step-num" aria-hidden="true">1</span><span class="step-body"><strong>Create your account</strong><span>Name and work email. You are in within a minute.</span></span></li>
+            <li><span class="step-num" aria-hidden="true">2</span><span class="step-body"><strong>Upload the course ZIP</strong><span>Drop in the exported course package as a single ZIP file.</span></span></li>
+            <li><span class="step-num" aria-hidden="true">3</span><span class="step-body"><strong>Test the prepared course</strong><span>Open the finished course from your account and review it.</span></span></li>
+          </ol>
+        </div>
+      </section>
 
-      <section class="split-main" aria-labelledby="signup-title">
+      <!-- Task side: plain white -->
+      <section class="split-main" aria-labelledby="form-title">
         <div>
-          <p class="eyebrow">New customer</p>
-          <h1 id="signup-title">Create your account</h1>
-          <p class="lead">We only need your name and your work email address.</p>
+          <div class="form-head">
+            <p class="eyebrow">Step 1 of 3</p>
+            <h2 id="form-title">Create your account</h2>
+            <p>It takes about a minute. Fields marked <span class="req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+          </div>
 
-          <form action="#" method="post">
+          <form class="form" action="#" method="post">
             <div class="form-group">
               <label for="name" class="form-label">Full name <span class="req" aria-hidden="true">*</span></label>
-              <input type="text" id="name" name="name" class="form-input" placeholder="Jane Doe" autocomplete="name" required>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Maria Beispiel" autocomplete="name" required>
             </div>
 
             <div class="form-group">
               <label for="email" class="form-label">Work email <span class="req" aria-hidden="true">*</span></label>
-              <input type="email" id="email" name="email" class="form-input" placeholder="jane.doe@company.com" autocomplete="email" required>
-              <span class="form-help">We send a sign-in link to this address.</span>
+              <input type="email" id="email" name="email" class="form-input" placeholder="maria@company.com" autocomplete="email" required aria-describedby="email-help">
+              <span class="form-help" id="email-help">We send your sign-in link to this address.</span>
             </div>
 
-            <div class="consent-group">
-              <div class="form-group form-check">
-                <input type="checkbox" id="consent" name="consent" required>
-                <label for="consent">I agree that my details are processed to create and run my account, as described in the <a href="#privacy">privacy policy</a>. <span class="req" aria-hidden="true">*</span></label>
-              </div>
-
-              <div class="form-group form-check">
-                <input type="checkbox" id="newsletter" name="newsletter">
-                <label for="newsletter">Send me the Netresearch newsletter (optional).</label>
-              </div>
+            <div class="form-check">
+              <input type="checkbox" id="consent" name="consent" required>
+              <label for="consent">I agree that my details are processed to provide the portal, as described in the <a href="#privacy">privacy policy</a>. <span class="req" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
             </div>
 
-            <div class="form-actions">
-              <button type="submit" class="btn-primary btn-large btn-block">Create account</button>
+            <div class="form-check">
+              <input type="checkbox" id="newsletter" name="newsletter">
+              <label for="newsletter">Send me occasional news about Kursportal by email (optional).</label>
             </div>
-            <p class="form-note"><span class="req" aria-hidden="true">*</span> Required field</p>
+
+            <button type="submit" class="btn-primary btn-large btn-block form-submit">Create account</button>
+            <p class="form-alt" id="sign-in">Already have an account? <a href="#sign-in">Sign in</a></p>
           </form>
-
-          <p id="signin" class="signin-line">Already have an account? <a href="#signin" class="link-standalone">Sign in</a></p>
         </div>
       </section>
     </div>
 
-    <section class="section section-alt facts-section" aria-labelledby="facts-title">
+    <!-- Facts -->
+    <section class="section section-alt" aria-labelledby="facts-title">
       <div class="container">
         <div class="section-header">
           <p class="eyebrow">Good to know</p>
           <h2 id="facts-title" class="section-title">Three things before you start</h2>
         </div>
-
-        <div class="three-column">
+        <div class="facts-grid">
           <div class="card">
             <div class="card-content">
-              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01"/></svg></span>
+              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg></span>
               <h3 class="card-title">Server in Germany</h3>
-              <p class="card-text">Your course files are stored on a server in Germany.</p>
+              <p class="card-text">Your course files are stored and processed on a server located in Germany.</p>
             </div>
           </div>
-
           <div class="card">
             <div class="card-content">
-              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4M4 20 20 4"/></svg></span>
-              <h3 class="card-title">No payment details needed</h3>
-              <p class="card-text">Registration takes a name and an email address. We never ask for card or bank details.</p>
+              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3M4 4l16 16"/></svg></span>
+              <h3 class="card-title">No payment details</h3>
+              <p class="card-text">Creating an account and uploading a course does not ask for a card or bank account.</p>
             </div>
           </div>
-
           <div class="card">
             <div class="card-content">
-              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
+              <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></span>
               <h3 class="card-title">Sign-in by email link</h3>
-              <p class="card-text">There is no password to remember. Each time you sign in, we send a one-time link to your email.</p>
+              <p class="card-text">There is no password. Each time you sign in, we send a one-time link to your work email.</p>
             </div>
           </div>
         </div>
@@ -1672,23 +1752,21 @@ code, kbd {
       <div class="footer-section">
         <h4>Kursportal</h4>
         <ul>
-          <li><a href="#main">Create account</a></li>
-          <li><a href="#signin">Sign in</a></li>
+          <li><a href="#sign-in">Sign in</a></li>
+          <li><a href="#help">Help</a></li>
         </ul>
       </div>
-
       <div class="footer-section">
         <h4>Legal</h4>
         <ul>
           <li><a href="#imprint">Imprint</a></li>
-          <li><a href="#privacy">Privacy Policy</a></li>
+          <li><a href="#privacy">Privacy policy</a></li>
         </ul>
       </div>
     </div>
-
     <div class="footer-bottom">
-      <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a></p>
-      <p>Nonnenstraße 11d · 04229 Leipzig</p>
+      <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a>. All rights reserved.</p>
+      <p>Nonnenstra&szlig;e 11d &middot; 04229 Leipzig</p>
     </div>
   </footer>
 </body>
