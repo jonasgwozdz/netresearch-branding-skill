@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kursportal - Create your account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nr-primary: #2F99A4;
+      --nr-primary-rgb: 47, 153, 164;
+      --nr-primary-dark: #257880;
+      --nr-primary-fill: #257880;
+      --nr-primary-text: #15585E;
+      --nr-primary-deep: #0A5057;
+      --nr-hero-from: #257880;
+      --nr-hero-to: #15585E;
+      --nr-primary-fill-hover: #15585E;
+      --nr-accent: #FF4D00;
+      --nr-accent-dark: #CC3D00;
+      --nr-accent-text: #9A2E00;
+
+      --nr-text: #585961;
+      --nr-text-secondary: #6E6F78;
+      --nr-bg: #FFFFFF;
+      --nr-bg-alt: #F5F5F5;
+      --nr-surface: #FFFFFF;
+      --nr-on-fill: #FFFFFF;
+      --nr-footer-bg: #585961;
+      --nr-footer-fg: #FFFFFF;
+      --nr-footer-muted: #D5D6D9;
+      --nr-footer-link-hover: #A8E4EB;
+      --nr-border: #CCCDCC;
+      --nr-border-strong: #8A8B93;
+      --nr-border-light: #E5E5E5;
+      --nr-error: #DC3545;
+
+      --font-headline: 'Raleway', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      --spacing-xs: 8px;
+      --spacing-sm: 12px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-xxl: 48px;
+      --spacing-3xl: 64px;
+      --spacing-4xl: 96px;
+
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --nr-bg: #14181B;
+        --nr-bg-alt: #1A2024;
+        --nr-surface: #1E2429;
+        --nr-text: #E8EDEF;
+        --nr-text-secondary: #A9B2B8;
+        --nr-primary-fill: #1B6C74;
+        --nr-primary-text: #5FC6D2;
+        --nr-primary-deep: #7FD6E0;
+        --nr-accent-text: #FF9166;
+        --nr-hero-from: #1B6C74;
+        --nr-hero-to: #0F4A50;
+        --nr-primary-fill-hover: #0F4A50;
+        --nr-border: #2A3238;
+        --nr-border-strong: #6B7680;
+        --nr-border-light: #232A30;
+        --nr-footer-bg: #10161A;
+        --nr-footer-fg: #E8EDEF;
+        --nr-footer-muted: #A9B2B8;
+        --nr-footer-link-hover: #7FD6E0;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.55);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--nr-text);
+      background-color: var(--nr-bg);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--nr-text);
+    }
+    p { margin-bottom: var(--spacing-md); }
+    a { color: var(--nr-primary-text); text-decoration: none; transition: color 0.3s ease; }
+    a:hover { color: var(--nr-primary-deep); text-decoration: underline; }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid var(--nr-primary);
+      outline-offset: 2px;
+    }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: 8px;
+      background: var(--nr-primary-fill); color: var(--nr-on-fill);
+      padding: 8px 16px; border-radius: 4px; z-index: 2000;
+    }
+    .skip-link:focus { left: 8px; }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+
+    /* Header */
+    .navbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--nr-surface);
+      box-shadow: var(--shadow-sm);
+      padding: var(--spacing-md) 0;
+    }
+    .navbar-container {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-lg);
+      gap: var(--spacing-md);
+    }
+    .brand { display: flex; align-items: center; gap: var(--spacing-md); }
+    .brand-logo { display: block; width: 48px; height: 48px; flex: none; }
+    .brand-logo svg { display: block; width: 100%; height: 100%; }
+    .brand-name {
+      font-family: var(--font-headline);
+      font-weight: 700; font-size: 22px; color: var(--nr-text);
+      letter-spacing: 0.3px;
+      padding-left: var(--spacing-md);
+      border-left: 3px solid var(--nr-accent);
+      line-height: 1.1;
+    }
+    .navbar-menu { display: flex; align-items: center; gap: var(--spacing-lg); list-style: none; }
+    .navbar-link {
+      font-family: var(--font-headline);
+      font-size: 16px; font-weight: 600;
+      color: var(--nr-text); padding: var(--spacing-xs) var(--spacing-md);
+    }
+    .navbar-link:hover { color: var(--nr-primary-text); text-decoration: none; }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-headline);
+      font-size: 18px; font-weight: 600; line-height: 1; letter-spacing: 0.5px;
+      text-align: center;
+      padding: 16px 48px;
+      border: none; border-radius: 4px; cursor: pointer;
+      background-color: var(--nr-primary-fill); color: var(--nr-on-fill);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: var(--nr-primary-fill-hover);
+      color: var(--nr-on-fill);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(47, 153, 164, 0.3);
+    }
+    .btn-block { width: 100%; padding-left: 24px; padding-right: 24px; }
+
+    /* Hero */
+    .hero {
+      background-color: var(--nr-hero-from);
+      background-image: linear-gradient(135deg, var(--nr-hero-from) 0%, var(--nr-hero-to) 100%);
+      color: var(--nr-on-fill);
+      padding: var(--spacing-4xl) 0;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--spacing-3xl);
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-family: var(--font-headline);
+      font-weight: 600; font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--nr-on-fill);
+      padding-bottom: var(--spacing-xs);
+      border-bottom: 3px solid var(--nr-accent);
+      margin-bottom: var(--spacing-lg);
+    }
+    .hero-title {
+      font-size: 56px;
+      color: var(--nr-on-fill);
+      margin-bottom: var(--spacing-lg);
+    }
+    .hero-lead {
+      font-size: 20px; line-height: 1.6;
+      color: var(--nr-on-fill);
+      max-width: 34em;
+      margin-bottom: 0;
+    }
+
+    /* Form card */
+    .card {
+      background: var(--nr-surface);
+      color: var(--nr-text);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      padding: var(--spacing-xl);
+    }
+    .card h2 { font-size: 28px; margin-bottom: var(--spacing-xs); }
+    .card-intro { color: var(--nr-text-secondary); margin-bottom: var(--spacing-lg); font-size: 15px; }
+    .form-group { margin-bottom: var(--spacing-lg); }
+    .form-label {
+      display: block; font-size: 14px; font-weight: 600;
+      color: var(--nr-text); margin-bottom: var(--spacing-xs);
+    }
+    .form-input {
+      width: 100%;
+      font-family: var(--font-body); font-size: 16px;
+      color: var(--nr-text);
+      padding: 12px 16px;
+      border: 1px solid var(--nr-border-strong);
+      border-radius: 4px;
+      background: var(--nr-surface);
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--nr-primary);
+      box-shadow: 0 0 0 3px rgba(47, 153, 164, 0.25);
+    }
+    .form-input::placeholder { color: var(--nr-text-secondary); }
+    .form-hint { font-size: 14px; color: var(--nr-text-secondary); margin-top: 6px; margin-bottom: 0; }
+    .check {
+      display: flex; gap: var(--spacing-sm); align-items: flex-start;
+      margin-bottom: var(--spacing-md);
+      font-size: 14px; line-height: 1.5;
+    }
+    .check input {
+      flex: none; width: 20px; height: 20px; margin-top: 1px;
+      accent-color: var(--nr-primary-fill);
+    }
+    .check label { cursor: pointer; }
+    .check .opt { color: var(--nr-text-secondary); }
+    .form-submit { margin-top: var(--spacing-lg); }
+    .form-alt {
+      margin: var(--spacing-lg) 0 0;
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--nr-border-light);
+      text-align: center; font-size: 15px;
+    }
+    .form-alt a { font-family: var(--font-headline); font-weight: 600; }
+    .form-alt a::after { content: ' \2192'; }
+
+    /* Sections */
+    .section { padding: var(--spacing-4xl) 0; }
+    .section-alt { background-color: var(--nr-bg-alt); }
+    .section-head { max-width: 720px; margin-bottom: var(--spacing-xxl); }
+    .section-head::before {
+      content: ''; display: block; width: 48px; height: 4px;
+      background: var(--nr-accent); margin-bottom: var(--spacing-lg);
+    }
+    .section-head h2 { font-size: 40px; margin-bottom: var(--spacing-md); }
+    .section-head p { font-size: 18px; color: var(--nr-text-secondary); margin-bottom: 0; }
+
+    .three-column {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-lg);
+    }
+
+    .step {
+      position: relative;
+      background: var(--nr-surface);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      border-top: 4px solid var(--nr-primary);
+      padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+      list-style: none;
+    }
+    .step-num {
+      display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--nr-primary-fill); color: var(--nr-on-fill);
+      font-family: var(--font-headline); font-weight: 700; font-size: 22px;
+      margin-bottom: var(--spacing-md);
+    }
+    .step h3 { font-size: 24px; font-weight: 600; margin-bottom: var(--spacing-sm); }
+    .step p { margin-bottom: 0; }
+
+    .fact { padding: var(--spacing-md) 0; }
+    .fact-icon {
+      width: 48px; height: 48px; margin-bottom: var(--spacing-md); display: block;
+      stroke: var(--nr-primary); fill: none; stroke-width: 1.75;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .fact h3 { font-size: 22px; font-weight: 600; margin-bottom: var(--spacing-xs); }
+    .fact p { margin-bottom: 0; }
+
+    /* Footer */
+    .footer {
+      background-color: var(--nr-footer-bg);
+      color: var(--nr-footer-fg);
+      padding: var(--spacing-xxl) 0 var(--spacing-lg);
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; gap: var(--spacing-xl);
+      flex-wrap: wrap;
+      padding-bottom: var(--spacing-lg);
+    }
+    .footer h4 { font-size: 18px; font-weight: 600; color: var(--nr-footer-fg); margin-bottom: var(--spacing-sm); }
+    .footer ul { list-style: none; }
+    .footer li { margin-bottom: var(--spacing-xs); }
+    .footer a { color: var(--nr-footer-fg); text-decoration: underline; }
+    .footer a:hover { color: var(--nr-footer-link-hover); }
+    .footer-nav { display: flex; gap: var(--spacing-xxl); flex-wrap: wrap; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: var(--spacing-lg);
+    }
+    .footer-bottom p { color: var(--nr-footer-muted); font-size: 14px; margin: 0; }
+    .footer-bottom a { color: var(--nr-footer-fg); }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: var(--spacing-xxl); }
+      .hero-title { font-size: 44px; }
+      .three-column { grid-template-columns: 1fr; }
+      .section-head h2 { font-size: 34px; }
+    }
+    @media (max-width: 768px) {
+      .hero { padding: var(--spacing-xxl) 0; }
+      .section { padding: var(--spacing-xxl) 0; }
+    }
+    @media (max-width: 600px) {
+      .container, .navbar-container { padding: 0 16px; }
+      .brand-name { font-size: 18px; padding-left: 12px; }
+      .brand { gap: 12px; }
+      .brand-logo { width: 40px; height: 40px; }
+      .navbar-link { padding: 8px 0; }
+      .hero-title { font-size: 32px; }
+      .hero-lead { font-size: 18px; }
+      .card { padding: var(--spacing-lg) 20px; }
+      .card h2 { font-size: 24px; }
+      .section-head h2 { font-size: 28px; }
+      .section-head p { font-size: 16px; }
+      .btn-primary { padding: 14px 24px; font-size: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; scroll-behavior: auto !important; }
+      .btn-primary:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#signup">Skip to sign-up form</a>
+
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="brand">
+        <a class="brand-logo" href="https://www.netresearch.de/" aria-label="Netresearch DTT GmbH">
+          <svg viewBox="-75 -75 440 440" version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Netresearch">
+            <title>Netresearch DTT GmbH</title>
+            <g>
+              <path fill="#2F99A4" d="M209.6,0V31.62h32.77a26.38,26.38,0,0,1,26.44,26.43V242a26.38,26.38,0,0,1-26.44,26.44H209.6V300h47.93a42.77,42.77,0,0,0,42.86-42.86V42.89A42.76,42.76,0,0,0,257.53,0ZM43.25,0A42.76,42.76,0,0,0,.39,42.89V257.18A42.76,42.76,0,0,0,43.25,300H91.18V268.46H58.4A26.38,26.38,0,0,1,32,242v-184A26.37,26.37,0,0,1,58.4,31.62H91.18V0Z" transform="translate(-0.39 -0.04)" />
+              <path fill="#585961" d="M221.44,120.41c0-34.48-13.94-57.82-48.93-57.82-26.62,0-48.54,7.74-64.17,26.56l-.7-22.06-28.31.06V232.94h31.59V124.69c7.14-18.38,32.14-34.8,53-34.5,27.38.4,25.2,26.24,26,45.81v96.94h31.58" transform="translate(-0.39 -0.04)" />
+            </g>
+          </svg>
+        </a>
+        <span class="brand-name">Kursportal</span>
+      </div>
+      <nav aria-label="Main">
+        <ul class="navbar-menu">
+          <li><a href="#how" class="navbar-link">How it works</a></li>
+          <li><a href="#signin" class="navbar-link">Sign in</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Course handover</span>
+          <h1 class="hero-title">Hand over your e-learning course package</h1>
+          <p class="hero-lead">
+            Create an account, upload your course as a ZIP file, and test the prepared course. The Kursportal is where companies send their course packages to Netresearch.
+          </p>
+        </div>
+
+        <div class="card" id="signup">
+          <h2>Create your account</h2>
+          <p class="card-intro">Two details are enough to start. You sign in later with a link sent to your email.</p>
+          <form action="#" method="post">
+            <div class="form-group">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" autocomplete="name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Work email</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="name@company.com" autocomplete="email" required>
+              <p class="form-hint">We send your sign-in link to this address.</p>
+            </div>
+
+            <div class="check">
+              <input type="checkbox" id="consent" name="consent" required>
+              <label for="consent">I agree to the processing of my data as described in the <a href="#privacy">privacy policy</a>. (required)</label>
+            </div>
+
+            <div class="check">
+              <input type="checkbox" id="newsletter" name="newsletter">
+              <label for="newsletter">Send me the Netresearch newsletter. <span class="opt">(optional)</span></label>
+            </div>
+
+            <div class="form-submit">
+              <button type="submit" class="btn-primary btn-block">Create account</button>
+            </div>
+          </form>
+          <p class="form-alt" id="signin">Already have an account? <a href="#signin">Sign in</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>How it works</h2>
+          <p>Three steps from account to a course you can test.</p>
+        </div>
+        <ol class="three-column">
+          <li class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <h3>Create an account</h3>
+            <p>Enter your name and work email. After you confirm, you land in your own course area.</p>
+          </li>
+          <li class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <h3>Upload the course ZIP</h3>
+            <p>Add your course package as a ZIP file. Netresearch receives it and prepares the course.</p>
+          </li>
+          <li class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <h3>Test the prepared course</h3>
+            <p>Open the prepared course in your browser and try it out before you use it.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section-alt" aria-labelledby="facts-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="facts-title">Good to know</h2>
+        </div>
+        <div class="three-column">
+          <div class="fact">
+            <svg class="fact-icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <rect x="8" y="6" width="32" height="14" rx="3"></rect>
+              <rect x="8" y="28" width="32" height="14" rx="3"></rect>
+              <path d="M14 13h.01M14 35h.01M22 13h12M22 35h12"></path>
+            </svg>
+            <h3>Server in Germany</h3>
+            <p>Your uploaded course files are stored on a server located in Germany.</p>
+          </div>
+          <div class="fact">
+            <svg class="fact-icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <rect x="5" y="11" width="38" height="26" rx="3"></rect>
+              <path d="M5 19h38M12 30h8"></path>
+              <path d="M7 41L41 7"></path>
+            </svg>
+            <h3>No payment details needed</h3>
+            <p>Creating an account does not ask for a credit card or any other payment information.</p>
+          </div>
+          <div class="fact">
+            <svg class="fact-icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <rect x="5" y="10" width="38" height="28" rx="3"></rect>
+              <path d="M6 13l18 14 18-14"></path>
+            </svg>
+            <h3>Sign-in by email link</h3>
+            <p>There is no password to remember. Each time you sign in, we send a link to your email.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-nav">
+          <div>
+            <h4>Kursportal</h4>
+            <ul>
+              <li><a href="#signup">Create account</a></li>
+              <li><a href="#signin">Sign in</a></li>
+              <li><a href="#how">How it works</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#imprint">Imprint</a></li>
+              <li><a href="#privacy">Privacy policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a>, Leipzig, Germany</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

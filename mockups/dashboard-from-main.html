@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataSync Build and Deployment Status - Netresearch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nr-primary: #2F99A4;
+      --nr-primary-rgb: 47, 153, 164;
+      --nr-primary-fill: #257880;
+      --nr-primary-text: #15585E;
+      --nr-primary-deep: #0A5057;
+      --nr-hero-from: #257880;
+      --nr-hero-to: #15585E;
+      --nr-accent: #FF4D00;
+      --nr-accent-dark: #CC3D00;
+      --nr-accent-text: #9A2E00;
+      --nr-text: #585961;
+      --nr-text-secondary: #6E6F78;
+      --nr-bg: #FFFFFF;
+      --nr-bg-alt: #F5F5F5;
+      --nr-surface: #FFFFFF;
+      --nr-on-fill: #FFFFFF;
+      --nr-footer-bg: #585961;
+      --nr-footer-fg: #FFFFFF;
+      --nr-footer-muted: #D5D6D9;
+      --nr-footer-link-hover: #A8E4EB;
+      --nr-border: #CCCDCC;
+      --nr-border-strong: #8A8B93;
+      --nr-border-light: #E5E5E5;
+
+      /* Status: opaque tints with measured-dark text (colour is never the only cue; each badge carries a label and glyph) */
+      --st-pass-bg: #E3F4E8;  --st-pass-fg: #14602A;
+      --st-fail-bg: #FCE8EA;  --st-fail-fg: #9B1C28;
+      --st-warn-bg: #FFF3CD;  --st-warn-fg: #664A00;
+      --st-run-bg: #DFF1F3;   --st-run-fg: #15585E;
+      --st-idle-bg: #ECECEE;  --st-idle-fg: #4D4F57;
+      --st-fail-mark: #DC3545;
+      --st-pass-mark: #28A745;
+      --st-warn-mark: #FFC107;
+
+      --font-headline: 'Raleway', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      --spacing-xs: 8px;
+      --spacing-sm: 12px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-xxl: 48px;
+      --spacing-3xl: 64px;
+
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--nr-text);
+      background-color: var(--nr-bg-alt);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--nr-text);
+    }
+
+    a { color: var(--nr-primary-text); text-decoration: none; transition: color .3s ease; }
+    a:hover { color: var(--nr-primary-deep); text-decoration: underline; }
+    a:focus-visible { outline: 3px solid var(--nr-primary); outline-offset: 2px; border-radius: 2px; }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: 0;
+      background: var(--nr-primary-fill); color: var(--nr-on-fill);
+      padding: 8px 16px; z-index: 2000; font-family: var(--font-headline); font-weight: 600;
+    }
+    .skip-link:focus { left: 16px; top: 8px; color: var(--nr-on-fill); }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-lg); }
+
+    /* ---------- Header ---------- */
+    .navbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--nr-surface);
+      box-shadow: var(--shadow-sm);
+      border-bottom: 3px solid var(--nr-primary);
+      padding: var(--spacing-sm) 0;
+    }
+    .navbar-container {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md);
+      max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-lg);
+    }
+    .brand { display: flex; align-items: center; gap: var(--spacing-md); min-width: 0; }
+    .brand-logo { display: block; width: 48px; height: 48px; flex: none; }
+    .brand-logo svg { display: block; width: 48px; height: 48px; }
+    .brand-text { display: flex; flex-direction: column; min-width: 0; }
+    .brand-name {
+      font-family: var(--font-headline); font-weight: 700; font-size: 20px; line-height: 1.2; color: var(--nr-text);
+    }
+    .brand-sub { font-size: 14px; line-height: 1.4; color: var(--nr-text-secondary); }
+    .nav-meta {
+      display: flex; align-items: center; gap: var(--spacing-md);
+      font-size: 14px; color: var(--nr-text-secondary);
+    }
+    .nav-meta strong { color: var(--nr-text); font-weight: 600; }
+
+    .tag-example {
+      display: inline-block;
+      font-family: var(--font-headline); font-weight: 700; font-size: 14px; letter-spacing: .4px;
+      text-transform: uppercase;
+      background: var(--st-warn-bg); color: var(--st-warn-fg);
+      border: 1px solid var(--st-warn-mark);
+      border-radius: 4px; padding: 2px 10px; white-space: nowrap;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      background-color: var(--nr-hero-from);
+      background-image: linear-gradient(135deg, var(--nr-hero-from) 0%, var(--nr-hero-to) 100%);
+      color: var(--nr-on-fill);
+      padding: var(--spacing-xxl) 0 calc(var(--spacing-xxl) + 24px);
+    }
+    .hero h1 {
+      font-size: 40px; color: var(--nr-on-fill); margin-bottom: var(--spacing-sm);
+    }
+    .hero .eyebrow {
+      font-family: var(--font-headline); font-weight: 600; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+      color: #D5EEF1; margin-bottom: var(--spacing-xs); display: block;
+    }
+    .hero p.lead { font-size: 20px; line-height: 1.6; max-width: 820px; color: var(--nr-on-fill); margin: 0; }
+
+    /* ---------- Stat tiles ---------- */
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-lg);
+      margin-top: -48px; position: relative; z-index: 2;
+    }
+    .stat {
+      background: var(--nr-surface); border-radius: 8px; box-shadow: var(--shadow-md);
+      padding: var(--spacing-lg); border-top: 4px solid var(--nr-primary);
+    }
+    .stat.is-fail { border-top-color: var(--st-fail-mark); }
+    .stat-label { font-size: 14px; line-height: 1.4; color: var(--nr-text-secondary); font-weight: 600; margin-bottom: 4px; }
+    .stat-value {
+      font-family: var(--font-headline); font-weight: 700; font-size: 36px; line-height: 1.1; color: var(--nr-text);
+    }
+    .stat-value small { font-size: 18px; font-weight: 600; color: var(--nr-text-secondary); }
+    .stat-note { font-size: 14px; color: var(--nr-text-secondary); margin-top: 6px; line-height: 1.4; }
+
+    /* ---------- Sections ---------- */
+    main { padding-bottom: var(--spacing-3xl); }
+    .section { margin-top: var(--spacing-xxl); }
+    .section-head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: var(--spacing-md);
+      flex-wrap: wrap; margin-bottom: var(--spacing-md);
+    }
+    .section-head h2 { font-size: 28px; font-weight: 600; }
+    .section-head p { font-size: 14px; color: var(--nr-text-secondary); margin: 0; }
+
+    /* ---------- Badges ---------- */
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-headline); font-weight: 700; font-size: 14px; line-height: 1.2;
+      padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+    }
+    .badge::before { font-size: 14px; line-height: 1; }
+    .badge-pass { background: var(--st-pass-bg); color: var(--st-pass-fg); }
+    .badge-pass::before { content: '\2713'; }
+    .badge-fail { background: var(--st-fail-bg); color: var(--st-fail-fg); }
+    .badge-fail::before { content: '\2715'; }
+    .badge-run { background: var(--st-run-bg); color: var(--st-run-fg); }
+    .badge-run::before { content: '\25CF'; }
+    .badge-warn { background: var(--st-warn-bg); color: var(--st-warn-fg); }
+    .badge-warn::before { content: '\0021'; font-weight: 700; }
+    .badge-idle { background: var(--st-idle-bg); color: var(--st-idle-fg); }
+    .badge-idle::before { content: '\2298'; }
+
+    /* ---------- Alert ---------- */
+    .alert {
+      display: grid; grid-template-columns: auto 1fr auto; gap: var(--spacing-lg); align-items: start;
+      background: var(--nr-surface); border-radius: 8px; box-shadow: var(--shadow-sm);
+      border-left: 6px solid var(--nr-accent);
+      padding: var(--spacing-lg);
+    }
+    .alert-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--st-fail-bg); color: var(--st-fail-fg);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-headline); font-weight: 700; font-size: 22px; line-height: 1;
+    }
+    .alert h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .alert-kicker {
+      font-family: var(--font-headline); font-weight: 700; font-size: 14px; letter-spacing: .6px; text-transform: uppercase;
+      color: var(--nr-accent-text); display: block; margin-bottom: 2px;
+    }
+    .alert p { margin: 0 0 var(--spacing-sm); }
+    .alert-facts { display: flex; flex-wrap: wrap; gap: 4px 24px; font-size: 14px; color: var(--nr-text-secondary); margin: 0; }
+    .alert-facts strong { color: var(--nr-text); font-weight: 600; }
+    code, .mono {
+      font-family: ui-monospace, 'Cascadia Mono', Consolas, Menlo, monospace; font-size: 14px;
+      background: var(--nr-bg-alt); border: 1px solid var(--nr-border-light); border-radius: 4px; padding: 1px 6px;
+      color: var(--nr-text); overflow-wrap: anywhere;
+    }
+    .btn-primary {
+      display: inline-block; font-family: var(--font-headline); font-weight: 600; font-size: 16px; line-height: 1;
+      background: var(--nr-primary-fill); color: var(--nr-on-fill);
+      padding: 12px 24px; border-radius: 4px; border: none; white-space: nowrap;
+      transition: all .3s ease;
+    }
+    .btn-primary:hover { background: var(--nr-primary-deep); color: var(--nr-on-fill); text-decoration: none; }
+
+    /* ---------- Environments ---------- */
+    .env-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-lg); }
+    .env {
+      background: var(--nr-surface); border-radius: 8px; box-shadow: var(--shadow-sm);
+      border-top: 4px solid var(--nr-primary); padding: var(--spacing-lg);
+    }
+    .env.is-warn { border-top-color: var(--st-warn-mark); }
+    .env-top { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+    .env h3 { font-size: 24px; font-weight: 600; margin: 0; }
+    .env dl { display: grid; grid-template-columns: 96px 1fr; gap: 8px 12px; font-size: 14px; line-height: 1.5; }
+    .env dt { color: var(--nr-text-secondary); font-weight: 600; }
+    .env dd { color: var(--nr-text); overflow-wrap: anywhere; }
+    .env-note {
+      margin-top: var(--spacing-md); padding-top: var(--spacing-sm); border-top: 1px solid var(--nr-border-light);
+      font-size: 14px; line-height: 1.5; color: var(--nr-text-secondary);
+    }
+
+    /* ---------- Table ---------- */
+    .table-wrap { background: var(--nr-surface); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table caption { text-align: left; padding: var(--spacing-md) var(--spacing-lg); font-size: 14px; color: var(--nr-text-secondary); border-bottom: 1px solid var(--nr-border-light); }
+    .table thead { background-color: var(--nr-primary-fill); color: var(--nr-on-fill); }
+    .table th {
+      font-family: var(--font-headline); font-weight: 600; font-size: 14px; text-align: left; padding: 14px 16px;
+    }
+    .table td { padding: 12px 16px; border-bottom: 1px solid var(--nr-border-light); font-size: 15px; vertical-align: middle; }
+    .table tbody tr:last-child td { border-bottom: none; }
+    .table tbody tr:hover { background-color: var(--nr-bg-alt); }
+    .table tr.is-failed td:first-child { box-shadow: inset 4px 0 0 var(--st-fail-mark); }
+    .table .num { font-variant-numeric: tabular-nums; }
+    .pid { font-family: var(--font-headline); font-weight: 700; color: var(--nr-text); }
+    .table td.dur, .table th.dur { text-align: right; }
+
+    /* ---------- Footer ---------- */
+    .footer { background-color: var(--nr-footer-bg); color: var(--nr-footer-fg); padding: var(--spacing-xl) 0; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-md); flex-wrap: wrap; }
+    .footer p { margin: 0; font-size: 14px; color: var(--nr-footer-muted); }
+    .footer a { color: var(--nr-footer-fg); font-weight: 600; text-decoration: underline; }
+    .footer a:hover { color: var(--nr-footer-link-hover); }
+    .footer a:focus-visible { outline-color: var(--nr-footer-fg); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1024px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .env-grid { grid-template-columns: 1fr; }
+      .alert { grid-template-columns: auto 1fr; }
+      .alert .btn-primary { grid-column: 2; justify-self: start; }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .hero p.lead { font-size: 18px; }
+      .nav-meta .nav-time { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .container, .navbar-container { padding-left: 16px; padding-right: 16px; }
+      .brand-sub { display: none; }
+      .brand-name { font-size: 18px; }
+      .hero { padding-top: var(--spacing-xl); padding-bottom: calc(var(--spacing-xl) + 24px); }
+      .hero h1 { font-size: 28px; }
+      .hero p.lead { font-size: 16px; }
+      .stats { gap: var(--spacing-sm); margin-top: -40px; }
+      .stat { padding: var(--spacing-md); }
+      .stat-value { font-size: 28px; }
+      .stat-value small { font-size: 16px; }
+      .section { margin-top: var(--spacing-xl); }
+      .section-head h2 { font-size: 24px; }
+      .alert { grid-template-columns: 1fr; padding: var(--spacing-md); gap: var(--spacing-sm); }
+      .alert .btn-primary { grid-column: 1; }
+      .env { padding: var(--spacing-md); }
+      .env dl { grid-template-columns: 84px 1fr; }
+
+      /* Table becomes stacked records instead of squeezed columns */
+      .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
+      .table thead { position: absolute; left: -9999px; }
+      .table tr { padding: 12px 16px; border-bottom: 1px solid var(--nr-border-light); }
+      .table tbody tr:last-child { border-bottom: none; }
+      .table td { border: none; padding: 3px 0; display: grid; grid-template-columns: 84px 1fr; gap: 8px; align-items: center; text-align: left; }
+      .table td::before { content: attr(data-label); font-size: 14px; font-weight: 600; color: var(--nr-text-secondary); }
+      .table td.dur { text-align: left; }
+      .table tr.is-failed td:first-child { box-shadow: none; }
+      .table tr.is-failed { box-shadow: inset 4px 0 0 var(--st-fail-mark); }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="brand">
+        <a class="brand-logo" href="https://www.netresearch.de/" aria-label="Netresearch DTT GmbH">
+          <svg viewBox="-75 -75 440 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Netresearch symbol logo">
+            <title>Netresearch DTT GmbH</title>
+            <g>
+              <path fill="#2F99A4" d="M209.6,0V31.62h32.77a26.38,26.38,0,0,1,26.44,26.43V242a26.38,26.38,0,0,1-26.44,26.44H209.6V300h47.93a42.77,42.77,0,0,0,42.86-42.86V42.89A42.76,42.76,0,0,0,257.53,0ZM43.25,0A42.76,42.76,0,0,0,.39,42.89V257.18A42.76,42.76,0,0,0,43.25,300H91.18V268.46H58.4A26.38,26.38,0,0,1,32,242v-184A26.37,26.37,0,0,1,58.4,31.62H91.18V0Z" transform="translate(-0.39 -0.04)" />
+              <path fill="#585961" d="M221.44,120.41c0-34.48-13.94-57.82-48.93-57.82-26.62,0-48.54,7.74-64.17,26.56l-.7-22.06-28.31.06V232.94h31.59V124.69c7.14-18.38,32.14-34.8,53-34.5,27.38.4,25.2,26.24,26,45.81v96.94h31.58" transform="translate(-0.39 -0.04)" />
+            </g>
+          </svg>
+        </a>
+        <div class="brand-text">
+          <span class="brand-name">DataSync</span>
+          <span class="brand-sub">Build &amp; Deployment Status</span>
+        </div>
+      </div>
+      <div class="nav-meta">
+        <span class="nav-time">Updated <strong>13:27 CEST</strong>, 13 Oct 2026</span>
+        <span class="tag-example">Example data</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="page-title">
+    <div class="container">
+      <span class="eyebrow">DataSync &middot; CI/CD overview</span>
+      <h1 id="page-title">Build and deployment status</h1>
+      <p class="lead">
+        Production and staging run the latest passed builds. One build on <code>feature/delta-retry</code> failed
+        and the review environment is still on the previous revision. One pipeline is running.
+      </p>
+    </div>
+  </section>
+
+  <main id="main" class="container">
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat">
+        <div class="stat-label">Passed builds</div>
+        <div class="stat-value">6 <small>of 9</small></div>
+        <div class="stat-note">Last 9 pipelines</div>
+      </div>
+      <div class="stat is-fail">
+        <div class="stat-label">Failed builds</div>
+        <div class="stat-value">1</div>
+        <div class="stat-note">#48209, 12:41</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Running now</div>
+        <div class="stat-value">1</div>
+        <div class="stat-note">#48216 on <span class="mono">fix/schema-lock</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Environments up to date</div>
+        <div class="stat-value">2 <small>of 3</small></div>
+        <div class="stat-note">Review is one build behind</div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="alert-title">
+      <div class="section-head">
+        <h2 id="alert-title">Alert</h2>
+        <p>1 open</p>
+      </div>
+      <div class="alert" role="alert">
+        <div class="alert-icon" aria-hidden="true">!</div>
+        <div>
+          <span class="alert-kicker">Build failed</span>
+          <h3>Pipeline #48209 failed in stage <code>integration-test</code></h3>
+          <p>
+            Job <code>test:postgres-16</code> exited with code 1 after 2 m 47 s: 3 of 212 tests failed in
+            <code>test_delta_retry_backoff</code>. The deployment to the review environment was skipped.
+          </p>
+          <p class="alert-facts">
+            <span><strong>Branch</strong> feature/delta-retry</span>
+            <span><strong>Commit</strong> 9c41e7a</span>
+            <span><strong>Started</strong> 12:41</span>
+            <span><strong>Author</strong> example.user</span>
+          </p>
+        </div>
+        <a class="btn-primary" href="#builds">See build list</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="env-title">
+      <div class="section-head">
+        <h2 id="env-title">Deployments</h2>
+        <p>3 environments</p>
+      </div>
+      <div class="env-grid">
+        <article class="env">
+          <div class="env-top">
+            <h3>Production</h3>
+            <span class="badge badge-pass">Healthy</span>
+          </div>
+          <dl>
+            <dt>Version</dt><dd>v2.7.4</dd>
+            <dt>Source</dt><dd>main, pipeline #48180</dd>
+            <dt>Deployed</dt><dd>Today 09:52</dd>
+            <dt>Replicas</dt><dd>4 of 4 ready</dd>
+          </dl>
+          <p class="env-note">Next scheduled release window: 15 Oct 2026, 10:00 CEST.</p>
+        </article>
+
+        <article class="env">
+          <div class="env-top">
+            <h3>Staging</h3>
+            <span class="badge badge-pass">Healthy</span>
+          </div>
+          <dl>
+            <dt>Version</dt><dd>v2.8.0-rc.2</dd>
+            <dt>Source</dt><dd>release/2.8, pipeline #48198</dd>
+            <dt>Deployed</dt><dd>Today 11:41</dd>
+            <dt>Replicas</dt><dd>2 of 2 ready</dd>
+          </dl>
+          <p class="env-note">Smoke tests passed at 11:46.</p>
+        </article>
+
+        <article class="env is-warn">
+          <div class="env-top">
+            <h3>Review</h3>
+            <span class="badge badge-warn">Outdated</span>
+          </div>
+          <dl>
+            <dt>Version</dt><dd>review-delta-retry-7f2c</dd>
+            <dt>Source</dt><dd>feature/delta-retry, pipeline #48187</dd>
+            <dt>Deployed</dt><dd>Today 10:34</dd>
+            <dt>Replicas</dt><dd>1 of 1 ready</dd>
+          </dl>
+          <p class="env-note">Still serving the revision from #48187. Deploy from #48209 was skipped after the failed tests.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="builds" aria-labelledby="builds-title">
+      <div class="section-head">
+        <h2 id="builds-title">Last builds</h2>
+        <p>9 most recent pipelines, newest first</p>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <caption>Example data: pipelines of the DataSync project, 13 Oct 2026 (times in CEST)</caption>
+          <thead>
+            <tr>
+              <th scope="col">Pipeline</th>
+              <th scope="col">Branch</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="dur">Duration</th>
+              <th scope="col">Started</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48216</span></td>
+              <td data-label="Branch"><span class="mono">fix/schema-lock</span></td>
+              <td data-label="Status"><span class="badge badge-run">Running</span></td>
+              <td data-label="Duration" class="dur num">1 m 22 s</td>
+              <td data-label="Started" class="num">13:26</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48213</span></td>
+              <td data-label="Branch"><span class="mono">main</span></td>
+              <td data-label="Status"><span class="badge badge-pass">Passed</span></td>
+              <td data-label="Duration" class="dur num">4 m 12 s</td>
+              <td data-label="Started" class="num">13:02</td>
+            </tr>
+            <tr class="is-failed">
+              <td data-label="Pipeline"><span class="pid">#48209</span></td>
+              <td data-label="Branch"><span class="mono">feature/delta-retry</span></td>
+              <td data-label="Status"><span class="badge badge-fail">Failed</span></td>
+              <td data-label="Duration" class="dur num">2 m 47 s</td>
+              <td data-label="Started" class="num">12:41</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48204</span></td>
+              <td data-label="Branch"><span class="mono">main</span></td>
+              <td data-label="Status"><span class="badge badge-pass">Passed</span></td>
+              <td data-label="Duration" class="dur num">4 m 31 s</td>
+              <td data-label="Started" class="num">11:58</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48198</span></td>
+              <td data-label="Branch"><span class="mono">release/2.8</span></td>
+              <td data-label="Status"><span class="badge badge-pass">Passed</span></td>
+              <td data-label="Duration" class="dur num">6 m 05 s</td>
+              <td data-label="Started" class="num">11:20</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48192</span></td>
+              <td data-label="Branch"><span class="mono">fix/schema-lock</span></td>
+              <td data-label="Status"><span class="badge badge-pass">Passed</span></td>
+              <td data-label="Duration" class="dur num">3 m 36 s</td>
+              <td data-label="Started" class="num">10:47</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48187</span></td>
+              <td data-label="Branch"><span class="mono">feature/delta-retry</span></td>
+              <td data-label="Status"><span class="badge badge-pass">Passed</span></td>
+              <td data-label="Duration" class="dur num">3 m 58 s</td>
+              <td data-label="Started" class="num">10:12</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48180</span></td>
+              <td data-label="Branch"><span class="mono">main</span></td>
+              <td data-label="Status"><span class="badge badge-pass">Passed</span></td>
+              <td data-label="Duration" class="dur num">4 m 09 s</td>
+              <td data-label="Started" class="num">09:35</td>
+            </tr>
+            <tr>
+              <td data-label="Pipeline"><span class="pid">#48175</span></td>
+              <td data-label="Branch"><span class="mono">renovate/symfony-7.3</span></td>
+              <td data-label="Status"><span class="badge badge-idle">Canceled</span></td>
+              <td data-label="Duration" class="dur num">0 m 41 s</td>
+              <td data-label="Started" class="num">09:02</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 <a href="https://www.netresearch.de/">Netresearch DTT GmbH</a></p>
+      <p>All values on this page are example data for layout review, not live pipeline results.</p>
+    </div>
+  </footer>
+</body>
+</html>
